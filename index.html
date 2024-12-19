@@ -144,12 +144,12 @@ constructor(sampleRate,tone,sustain,vol,vibOn,cvName) {
 		return s / 2.0 / n;
 	}).setOutput([sampleRate]); */
 
-	
+	/*
 	this.madd = gpu.createKernel(function(nowBuffering,offset,xs,f) {
 		return nowBuffering[this.thread.x + offset] + xs[this.thread.x] * f;
 	}).setOutput([sampleRate]);
 	
-
+*/
 				    
 	this.sampleRate = sampleRate;
 	this.rands = new Float32Array(2000);
@@ -421,6 +421,52 @@ make();
 },10);
 }
 
+
+const gpu = new GPU();
+	gpu.addFunction(function mypow(x,y) {
+		return Math.sign(x) * Math.pow(Math.abs(x),y);
+	});
+	gpu.addFunction(function tooth(x) {
+		x /= Math.PI * 2;
+		return 2 * (x - Math.floor(x)) - 1;
+	});
+	gpu.addFunction(function rect(x) {
+		//return Math.round(Math.sin(x) + 1) - 1;
+		return mypow(Math.sin(x),0.1);
+	});
+	gpu.addFunction(function tooth2(x) {
+		//return Math.round(Math.sin(x) + 1) - 1;
+		return mypow(Math.sin(x),10);
+	});
+
+	let _waveGPU = gpu.createKernel(function(xs,len,rands,sampleRate,tone,sustain,vibOn,correction) {
+		let y = 440.0 * this.thread.x / sampleRate * Math.PI * 2;
+		let x = 440.0 * this.thread.x / sampleRate * Math.PI * 2;
+		let f = 440.0 * this.thread.x / len * Math.pow(2.0,(12 + tone) / 12.0) * Math.PI;
+		/*let z = 0;
+		let n = rands[104] * 6 + 1;
+		for(let i = 0;i < n;++i) {
+			let k = i * 10;
+			let p = 2 * rands[k + 0] + 1.0;
+			if(rands[k + 1] < 0.5) p = 1.0 / p;
+			z += rands[k + 2] * mypow(Math.sin(x + Math.PI * 2 * rands[k + 3]),p);
+		}
+		z =;*/
+		let z = xs[Math.round(f) % len];
+		//z *= Math.cos(0.05 * x * Math.pow(2,-Math.floor(rands[101] * 4.0 + 1.0))) + 2;
+		//z *= Math.cos(0.1 * y * Math.pow(2,-Math.floor(rands[102] * 4.0 + 1.0))) + 2;
+		if(vibOn == 1) {
+			z *= Math.abs(Math.cos(y * 0.25 * (rands[0] * 0.5 + 0.5))) + (2 * (rands[1] * 0.5 + 0.5));
+			z *= Math.abs(Math.cos(y * 0.025 * (rands[2] * 0.5 + 0.5) * Math.pow(2.0,tone / 12.0))) + (2 * (rands[3] * 0.5 + 0.5));
+		}
+		return	z;
+	}).setOutput([sampleRate]); // over 1 second
+
+
+
+
+
+	
 </script>
 
 <button onclick="sound()" style='width:25%;height:25%'>Sound</button>
