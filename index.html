@@ -447,7 +447,7 @@ const gpu = new GPU();
 			z *= Math.abs(Math.cos(y * 0.025 * (rands[2] * 0.5 + 0.5) * Math.pow(2.0,tone / 12.0))) + (2 * (rands[3] * 0.5 + 0.5));
 		}
 		return	z;
-	}).setOutput([sampleRate]); // over 1 second
+	}).setOutput([audioCtx.sampleRate]); // over 1 second
 
 
 
