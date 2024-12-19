@@ -107,7 +107,7 @@ constructor(sampleRate,tone,sustain,vol,vibOn,cvName) {
     */
     
 	
-let normalize(xs) {
+let normalize = function(xs) {
 		var max = -1000000;
 		var min = 1000000;
 		for(let i = 0;i < xs.length;++i) if(xs[i] > max) max = xs[i]; else if(xs[i] < min) min = xs[i];
