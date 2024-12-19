@@ -80,7 +80,7 @@ constructor(sampleRate,tone,sustain,vol,vibOn,cvName) {
 
 	let leftVol = Math.random();
 	this.chVols = [leftVol,1.0 - leftVol];
-	const gpu = new GPU();
+	/*const gpu = new GPU();
 	gpu.addFunction(function mypow(x,y) {
 		return Math.sign(x) * Math.pow(Math.abs(x),y);
 	});
@@ -101,26 +101,13 @@ constructor(sampleRate,tone,sustain,vol,vibOn,cvName) {
 		let y = 440.0 * this.thread.x / sampleRate * Math.PI * 2;
 		let x = 440.0 * this.thread.x / sampleRate * Math.PI * 2;
 		let f = 440.0 * this.thread.x / len * Math.pow(2.0,(12 + tone) / 12.0) * Math.PI;
-		/*let z = 0;
-		let n = rands[104] * 6 + 1;
-		for(let i = 0;i < n;++i) {
-			let k = i * 10;
-			let p = 2 * rands[k + 0] + 1.0;
-			if(rands[k + 1] < 0.5) p = 1.0 / p;
-			z += rands[k + 2] * mypow(Math.sin(x + Math.PI * 2 * rands[k + 3]),p);
-		}
-		z =;*/
-		let z = xs[Math.round(f) % len];
-		//z *= Math.cos(0.05 * x * Math.pow(2,-Math.floor(rands[101] * 4.0 + 1.0))) + 2;
-		//z *= Math.cos(0.1 * y * Math.pow(2,-Math.floor(rands[102] * 4.0 + 1.0))) + 2;
-		if(vibOn == 1) {
-			z *= Math.abs(Math.cos(y * 0.25 * (rands[0] * 0.5 + 0.5))) + (2 * (rands[1] * 0.5 + 0.5));
-			z *= Math.abs(Math.cos(y * 0.025 * (rands[2] * 0.5 + 0.5) * Math.pow(2.0,tone / 12.0))) + (2 * (rands[3] * 0.5 + 0.5));
-		}
-		return	z;
-	}).setOutput([sampleRate]); // over 1 second
-
-	let normalize = function(xs) {
+		/*let 
+  
+				
+    */
+    
+	
+let normalize(xs) {
 		var max = -1000000;
 		var min = 1000000;
 		for(let i = 0;i < xs.length;++i) if(xs[i] > max) max = xs[i]; else if(xs[i] < min) min = xs[i];
@@ -130,10 +117,10 @@ constructor(sampleRate,tone,sustain,vol,vibOn,cvName) {
 	};
 
 	this.waveGPU = function(fs,len,rands,sampleRate,tone,sustain,vibOn,correction) {
-		let xs = normalize(this.waveGPU_(fs,len,rands,sampleRate,tone,sustain,vibOn,correction));
+		let xs = normalize(_waveGPU_(fs,len,rands,sampleRate,tone,sustain,vibOn,correction));
 		//for(let i = 0;i < 5;++i) xs = normalize(this.waveGPU_(xs,xs.length,rands,sampleRate,tone,sustain,vibOn,correction));
 		for(let i = 0;i < xs.length;++i) xs[i] *= (Math.PI / 2 - Math.atan((i / sampleRate - sustain - 0.01) * 25)) / Math.PI;
-		//for(let i = 0;i < xs.length;++i) xs[i] *= (Math.PI / 2 - Math.atan((i / sampleRate - sustain) * 25)) / Math.PI;
+		//for(let i = 0;i < xs.length;++i) xs[i] *= (Math.PI  - Math.atan((i / sampleRate - sustain) * 25)) / Math.PI;
 		return (xs);
 	};
 		
