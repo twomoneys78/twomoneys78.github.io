@@ -387,6 +387,10 @@ let ins;
 	ins = new Instrument(audioCtx.sampleRate,-24,sust,3,1,"cv1");
 for(let i = 0;i < 2;++i)
 {
+	ins = new Instrument(audioCtx.sampleRate,-24,sust,3,1,"cv1");
+
+	
+	
 	ms.push(new Melody(1,8,ins));
 }
 
@@ -395,6 +399,8 @@ for(let i = 0;i < 2;++i)
 	ins = new Instrument(audioCtx.sampleRate,-12,sust,1,0);
 for(let i = 0;i < 2;++i)
 {
+	ins = new Instrument(audioCtx.sampleRate,-12,sust,1,0);
+, 
 	ms.push(new Melody(2,-1,ins));
 }
 
@@ -403,6 +409,9 @@ for(let i = 0;i < 2;++i)
 
 //Sound
 for(let i = 0;i < 2;++i) {
+	ins = new Instrument(audioCtx.sampleRate,0,sust,1,0,"cv1");
+
+	
 	ms.push(new Melody(1,-1,ins));
 }
 
