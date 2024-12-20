@@ -223,9 +223,10 @@ let _min = 100000;
 let _max = -100000;
 for(let i = 0;i < this.tones.length;++i) if(this.tones[i] > _max) _max = this.tones[i];		
 for(let i = 0;i < this.tones.length;++i) if(this.tones[i] < _min) _min = this.tones[i];
-let min = 0;
-let max = range;
-//if(range < 0)
+
+	
+	let min
+let max
 	
 do {
 min = rand(scale.length);
@@ -253,6 +254,21 @@ this.fractal(m,end,decay,-decay * amp);
 play(buffer,offset) {
 let vs = [1.2,0.8,0.9,0.8,1,0.8,0.9,0.8];
 let i = this.i % vs.length;
+
+if(this.i % (vs.length * 2) == 0) {
+let min
+let max
+	
+do {
+min = rand(scale.length);
+max = rand(scale.length);
+}while(min > max - scale.length / 2);
+
+this.min = min;
+this.max = max;
+	
+	 }
+
 
 	
 let r = 0.25 * Math.random() + 1;
