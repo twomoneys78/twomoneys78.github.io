@@ -399,23 +399,23 @@ for(let i = 0;i < 2;++i)
 
 
 	sust = 0.3 * Math.random() + 0.2;
-	ins = new Instrument(audioCtx.sampleRate,-12,sust,1,0);
-for(let i = 0;i < 2;++i)
+	//ins = new Instrument(audioCtx.sampleRate,-12,sust,1,0);
+for(let i = 0;i < 3;++i)
 {
-	ins = new Instrument(audioCtx.sampleRate,-12,sust,1,0);
+	ins = new Instrument(audioCtx.sampleRate,-12,sust,2,0);
 
 	ms.push(new Melody(2,-1,ins));
 }
 
 	sust = 0.3 * Math.random() + 0.2;
-	ins = new Instrument(audioCtx.sampleRate,0,sust,1,0,"cv1");
+	//ins = new Instrument(audioCtx.sampleRate,0,sust,2,0,"cv1");
 
 //Sound
-for(let i = 0;i < 2;++i) {
+for(let i = 0;i < 3;++i) {
 	ins = new Instrument(audioCtx.sampleRate,0,sust,1,0,"cv1");
 
 	
-	//ms.push(new Melody(1,-1,ins));
+	ms.push(new Melody(1,-1,ins));
 }
 
 
