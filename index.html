@@ -79,30 +79,22 @@ render(buffer,offset,tone,duration,vol) {
 }
 }   
 
+
+function sc2scale(sc) {
+	let scale = [0]
+	for(let i = 0;i < sc.length;++i) scale.push(scale[i] + sc[i]);
+	return scale
+}
+
+
 function makeScale() {
-let sc = [];
-let attr = "";
+let sc = [2,2,1,2,2,2,1]
+let n = rand(sc.length)
+for(let i = 0;i < n;++i) sc.unshift(sc.pop())
+sc = sc.concat(sc)
 
-switch(rand(2)) {
-case 0: sc = [0,2,4,5,7,9,11];attr = "Dur";break; // Dur
-case 1: sc = [0,2,3,5,7,8,10];attr = "Moll";break;
-case 2: sc = [0,2,3,5,7,8,11];attr = "Harmonisches Moll";break;
-case 3: sc = [0,2,3,6,7,8,11];attr = "Zigeuner Moll";break;
-}
-
-document.getElementById("base").innerHTML = "[" + sc + "] (" + attr + ")";
-
-let n = rand(12);
-
-scale = [];
-let k = 0;
-for(let j = 0;j < 5;++j)
-for(let i = 0;i < sc.length;++i) 
-if(sc[i] + 12 * j + n <= 30) {
-scale.push(sc[i] + 12 * j + n - 6);
-k += 1;
-}
-
+document.getElementById("base").innerHTML = "sc = [" + sc + "]";
+scale = sc2scale(sc)
 document.getElementById("scale").innerHTML = "[" + scale + "]";
 }
 
@@ -284,7 +276,7 @@ make();
 		let d = rands[9] * a + rands[10] * 0.5 * b + rands[11] * 0.25 * c
 		d /= rands[9] + rands[10] + rands[11]
 		
-		return d * (Math.atan(-20 * (this.thread.x / len - 0.5)) + Math.PI / 2) / Math.PI;
+		return d * (Math.atan(-40 * rands[18] * (this.thread.x / len - duration)) + Math.PI / 2) / Math.PI;
   	}).setOutput([audioCtx.sampleRate]); // over 1 second
 
 
