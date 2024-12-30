@@ -47,7 +47,7 @@ constructor(tone,cvName) {
 	let leftVol = Math.random();
 	this.chVols = [leftVol,1.0 - leftVol];
 
-	this.rands = new Float32Array(2000);
+	this.rands = new Float32Array(64);
 	for(let i = 0;i < this.rands.length;++i) this.rands[i] = Math.random();
 	
 	if(cvName) {
@@ -188,7 +188,7 @@ document.getElementById("abc").innerHTML = perc + "%";
 if(perc < 100) {
 
 // 8 Takte
-for(let k = 0;k < 8 * 4;++k) {
+for(let k = 0;k < 4;++k) {
 ms.forEach((m,j) => {
 if(m.i < frameCount) {
 m.play(myArrayBuffer,m.i);
@@ -261,47 +261,63 @@ make();
     const gpu = new GPU();
     
 	gpu.addFunction(function sawtooth(x) {
-	  x /= Math.PI * 2;
-	  return 2 * (x - Math.floor(x)) - 1;
+	  let y = x / Math.PI * 2;
+	  return 2 * (y - Math.floor(y)) - 1;
 	});
-		
+	
+	/*function sawtooth(x) {
+	  let y = x / Math.PI * 2;
+	  return 2 * (y - Math.floor(y)) - 1;
+	}	*/
+	
 	function wave(len,tone,rands,duration) {
 		let xs = waveGPU(len,tone,rands,duration);
-		var max = -1000000;
+		/*var max = -1000000;
 		var min = 1000000;
 		for(let i = 0;i < xs.length;++i) if(xs[i] > max) max = xs[i]; else if(xs[i] < min) min = xs[i];
 		var a = Math.max(Math.abs(max),Math.abs(min));
 		for(let i = 0;i < xs.length;++i) xs[i] = 2 * (xs[i] - min) / (max - min) - 1;
+		*/
 		return xs;
 	}
 	
 	let waveGPU = gpu.createKernel(function(len,tone,rands,duration) {
+	//function waveGPU(len,tone,rands,duration) {
+		//let xs = new Float32Array(audioCtx.sampleRate);
+		
+		//for(let k = 0;k < xs.length;++k) {
+		//this.thread = {x : k};
+		
 		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(0 + tone) / 12.0) * Math.PI;
   		let vibratoa = Math.sin(2 * Math.PI * 10 * rands[12] * this.thread.x / len) * rands[13];
  		let vibratob = Math.sin(2 * Math.PI * 10 * rands[14] * this.thread.x / len) * rands[15];
  		let vibratoc = Math.sin(2 * Math.PI * 10 * rands[16] * this.thread.x / len) * rands[17];
 
-		let a = rands[0] * Math.sin(omega + vibratoa);
+		let a = 0.0
+		a += rands[0] * Math.sin(omega + vibratoa);
 		a += rands[1] * Math.sign(Math.sin(omega + vibratoa));
 		a += rands[2] * sawtooth(omega + vibratoa);
-		a /= rands[0] + rands[1] + rands[2];
+		a /= rands[0] + rands[1] + rands[2]
 		
 		let b = rands[3] * Math.sin(omega * 2 + vibratob);
 		b += rands[4] * Math.sign(Math.sin(omega * 2 + vibratob));
 		b += rands[5] * sawtooth(omega * 2 + vibratob);
-		b /= rands[3] + rands[4] + rands[5];
+		b /= rands[3] + rands[4] + rands[5]
 		
 		let c = rands[6] * Math.sin(omega * 3 + vibratoc);
 		c += rands[7] * Math.sign(Math.sin(omega * 3 + vibratoc));
 		c += rands[8] * sawtooth(omega * 3 + vibratoc);
-		c /= rands[6] + rands[7] + rands[8];
+		c /= rands[6] + rands[7] + rands[8]
 		
 		let d = rands[9] * a + rands[10] * 0.5 * b + rands[11] * 0.25 * c
-		d /= rands[9] + rands[10] + rands[11]
+		d /= rands[9] + rands[10] * 0.5 + rands[11] * 0.25
 		
 		return d * (Math.atan(-80 * rands[18] * (this.thread.x / len - duration)) + Math.PI / 2) / Math.PI;
+		//}
+		
+		//return xs;
   	}).setOutput([audioCtx.sampleRate]); // over 1 second
-
+	//}
 
 
 
@@ -314,9 +330,9 @@ make();
 <br>
 Seconds : 
 <select id="sec">
-<option value="30">30</option>
+<option value="30" selected>30</option>
 <option value="60" >60</option>
-<option value="120" selected>120</option>
+<option value="120" >120</option>
 <option value="180">180</option>
 </select>
 <!--
