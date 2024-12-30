@@ -276,7 +276,7 @@ make();
 		let d = rands[9] * a + rands[10] * 0.5 * b + rands[11] * 0.25 * c
 		d /= rands[9] + rands[10] + rands[11]
 		
-		return d * (Math.atan(-40 * rands[18] * (this.thread.x / len - duration)) + Math.PI / 2) / Math.PI;
+		return d * (Math.atan(-80 * rands[18] * (this.thread.x / len - duration)) + Math.PI / 2) / Math.PI;
   	}).setOutput([audioCtx.sampleRate]); // over 1 second
 
 
