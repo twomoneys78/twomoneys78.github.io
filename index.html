@@ -80,8 +80,8 @@ render(buffer,offset,tone,duration,vol) {
 }   
 
 
-function sc2scale(sc) {
-	let scale = [0]
+function sc2scale(sc,x0) {
+	let scale = [x0]
 	for(let i = 0;i < sc.length;++i) scale.push(scale[i] + sc[i]);
 	return scale
 }
@@ -95,7 +95,7 @@ let n = rand(sc.length)
 sc = sc.concat(sc)
 
 document.getElementById("base").innerHTML = "sc = [" + sc + "]";
-scale = sc2scale(sc)
+scale = sc2scale(sc,rand(12) - 6)
 document.getElementById("scale").innerHTML = "[" + scale + "]";
 }
 
@@ -187,8 +187,8 @@ document.getElementById("abc").innerHTML = perc + "%";
 
 if(perc < 100) {
 
-// 4 Takte
-for(let k = 0;k < 4 * 4;++k) {
+// 8 Takte
+for(let k = 0;k < 8 * 4;++k) {
 ms.forEach((m,j) => {
 if(m.i < frameCount) {
 m.play(myArrayBuffer,m.i);
@@ -196,16 +196,16 @@ m.i += Math.round(speed * m.stepSize * audioCtx.sampleRate);
 } else m.i = frameCount;
 });
 }
-
-let m = rand(4)
-if(Math.random() < 0.5)
-for(let i = 0;i < m;++i) sc.unshift(sc.pop())
-else
+/*
+let m = sc[0]
+//if(Math.random() < 0.5)
+//for(let i = 0;i < m;++i) sc.unshift(sc.pop())
+//else
 for(let i = 0;i < m;++i) sc.push(sc.shift())
 document.getElementById("base").innerHTML = "sc = [" + sc + "]";
 scale = sc2scale(sc)
 document.getElementById("scale").innerHTML = "[" + scale + "]";
-	
+	*/
 window.setTimeout(make,10);
 } else {
 computing = false;
@@ -219,7 +219,7 @@ function sound() {
 
 	let bpm = 60 + Math.random() * 60
 //speed = 0.15 + 0.2 * Math.random();
-	speed = 60 / bpm /4
+	speed = 0.1 + Math.random() * 0.2
 //alert(speed) 
 
 	
