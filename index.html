@@ -205,7 +205,7 @@ var speed;
 
 function sound() {
 
-	let bpm = 80 + Math.random() * 30
+	let bpm = 60 + Math.random() * 60
 //speed = 0.15 + 0.2 * Math.random();
 	speed = 60 / bpm /4
 //alert(speed) 
@@ -286,8 +286,8 @@ make();
 	
 </script>
 <br>
-<button onclick="this.style.width = 0;sound()" style='width:25%;height:25%'>Sound</button>
-<button onclick="source.stop()">Next please</button>
+<button onclick="this.style.visibility='hidden';sound()" style='width:25%;height:25%;font-size:3em;position:absolute;'>Sound</button>
+<!--<button onclick="source.stop()">Next please</button>-->
 <br>
 Seconds : 
 <select id="sec">
