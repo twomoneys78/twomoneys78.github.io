@@ -86,11 +86,12 @@ function sc2scale(sc) {
 	return scale
 }
 
+let sc = [2,2,1,2,2,2,1]
 
 function makeScale() {
-let sc = [2,2,1,2,2,2,1]
+sc = [2,2,1,2,2,2,1]
 let n = rand(sc.length)
-for(let i = 0;i < n;++i) sc.unshift(sc.pop())
+//for(let i = 0;i < n;++i) sc.unshift(sc.pop())
 sc = sc.concat(sc)
 
 document.getElementById("base").innerHTML = "sc = [" + sc + "]";
@@ -186,7 +187,8 @@ document.getElementById("abc").innerHTML = perc + "%";
 
 if(perc < 100) {
 
-for(let k = 0;k < 4;++k) {
+// 4 Takte
+for(let k = 0;k < 4 * 4;++k) {
 ms.forEach((m,j) => {
 if(m.i < frameCount) {
 m.play(myArrayBuffer,m.i);
@@ -194,6 +196,16 @@ m.i += Math.round(speed * m.stepSize * audioCtx.sampleRate);
 } else m.i = frameCount;
 });
 }
+
+let m = rand(4)
+if(Math.random() < 0.5)
+for(let i = 0;i < m;++i) sc.unshift(sc.pop())
+else
+for(let i = 0;i < m;++i) sc.push(sc.shift())
+document.getElementById("base").innerHTML = "sc = [" + sc + "]";
+scale = sc2scale(sc)
+document.getElementById("scale").innerHTML = "[" + scale + "]";
+	
 window.setTimeout(make,10);
 } else {
 computing = false;
@@ -223,16 +235,17 @@ myArrayBuffer = audioCtx.createBuffer(channels, frameCount, audioCtx.sampleRate)
 
 ms = [];
 
+//Begleitung
+	ins = new Instrument(-12,0);
 for(let i = 0;i < 3;++i)
 {
-	ins = new Instrument(-12,0);
 
 	ms.push(new Melody(2,ins));
 }
 
 //Sound
-for(let i = 0;i < 3;++i) {
 	ins = new Instrument(0,"cv1");
+for(let i = 0;i < 3;++i) {
 
 	
 	ms.push(new Melody(1,ins));
