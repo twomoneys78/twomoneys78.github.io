@@ -299,6 +299,8 @@ make();
 		//this.thread = {x : k};
 		
 		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(0 + tone) / 12.0) * Math.PI;
+		let omega2 = 50.0 * this.thread.x / len * Math.PI;
+		
   		let vibratoa = Math.sin(2 * Math.PI * 1 * rands[12] * this.thread.x / len) * rands[13] * 1;
  		let vibratob = Math.sin(2 * Math.PI * 1 * rands[14] * this.thread.x / len) * rands[15] * 1;
  		let vibratoc = Math.sin(2 * Math.PI * 1 * rands[16] * this.thread.x / len) * rands[17] * 1;
@@ -324,7 +326,7 @@ make();
 		
 		//Envelope
 		//Reverb
-		d *= (Math.cos(omega / 20 * rands[30] * rands[30]) + 3 + 5 * rands[31]) / (4 + 5 * rands[31])
+		d *= (Math.cos(omega2 * rands[30]) + 3 + 5 * rands[31]) / (4 + 5 * rands[31])
 		//Fade Out
 		d *= (Math.atan(-(4 + 80 * rands[18]) * (this.thread.x / len - duration)) + Math.PI / 2) / Math.PI;
 		//Fade In
