@@ -52,7 +52,7 @@ constructor(tone,cvName,waveFunction) {
 	this.wave = waveFunction
 	
 	if(cvName) {
-		let xs = this.wave(audioCtx.sampleRate,0,this.rands,0.5);
+		let xs = this.wave(audioCtx.sampleRate,0,this.rands,0.25);
 		console.log(this.rands[0] + " " + this.rands[1] + " " + this.rands[2])
 		let cv = document.getElementById(cvName);
 		console.log(cv);
