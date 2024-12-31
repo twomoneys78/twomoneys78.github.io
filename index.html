@@ -289,7 +289,7 @@ make();
 		//Fade Out
 		a *= (Math.atan(-(10 + 80 * rands[18]) * (this.thread.x / len - 0.25 * duration)) + Math.PI / 2) / Math.PI;
 		return a
-  	}).setOutput([audioCtx.sampleRate]); // over 1 second
+  	}).setOutput([audioCtx.sampleRate / 2]); // over 1 second
 	
 	let waveGPU = gpu.createKernel(function(len,tone,rands,duration) {
 	//function waveGPU(len,tone,rands,duration) {
@@ -331,7 +331,7 @@ make();
 		//}
 		
 		//return xs;
-  	}).setOutput([audioCtx.sampleRate]); // over 1 second
+  	}).setOutput([audioCtx.sampleRate / 2]); // over 1 second
 	//}
 
 
