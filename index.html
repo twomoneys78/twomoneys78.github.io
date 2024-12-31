@@ -91,7 +91,7 @@ let sc = [2,2,1,2,2,2,1]
 function makeScale() {
 sc = [2,2,1,2,2,2,1]
 let n = rand(sc.length)
-//for(let i = 0;i < n;++i) sc.unshift(sc.pop())
+for(let i = 0;i < n;++i) sc.unshift(sc.pop())
 sc = sc.concat(sc)
 
 document.getElementById("base").innerHTML = "sc = [" + sc + "]";
@@ -188,7 +188,7 @@ document.getElementById("abc").innerHTML = perc + "%";
 
 if(perc < 100) {
 
-// 8 Takte
+// 1 Takte
 for(let k = 0;k < 4;++k) {
 ms.forEach((m,j) => {
 if(m.i < frameCount) {
@@ -197,16 +197,7 @@ m.i += Math.round(speed * m.stepSize * audioCtx.sampleRate);
 } else m.i = frameCount;
 });
 }
-/*
-let m = sc[0]
-//if(Math.random() < 0.5)
-//for(let i = 0;i < m;++i) sc.unshift(sc.pop())
-//else
-for(let i = 0;i < m;++i) sc.push(sc.shift())
-document.getElementById("base").innerHTML = "sc = [" + sc + "]";
-scale = sc2scale(sc)
-document.getElementById("scale").innerHTML = "[" + scale + "]";
-	*/
+
 window.setTimeout(make,10);
 } else {
 computing = false;
@@ -290,9 +281,9 @@ make();
 		//this.thread = {x : k};
 		
 		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(0 + tone) / 12.0) * Math.PI;
-  		let vibratoa = Math.sin(2 * Math.PI * 10 * rands[12] * this.thread.x / len) * rands[13];
- 		let vibratob = Math.sin(2 * Math.PI * 10 * rands[14] * this.thread.x / len) * rands[15];
- 		let vibratoc = Math.sin(2 * Math.PI * 10 * rands[16] * this.thread.x / len) * rands[17];
+  		let vibratoa = Math.sin(2 * Math.PI * 5 * rands[12] * this.thread.x / len) * rands[13];
+ 		let vibratob = Math.sin(2 * Math.PI * 5 * rands[14] * this.thread.x / len) * rands[15];
+ 		let vibratoc = Math.sin(2 * Math.PI * 5 * rands[16] * this.thread.x / len) * rands[17];
 
 		let a = 0.0
 		a += rands[0] * Math.sin(omega + vibratoa);
