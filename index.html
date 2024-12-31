@@ -281,9 +281,9 @@ make();
 		//this.thread = {x : k};
 		
 		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(0 + tone) / 12.0) * Math.PI;
-  		let vibratoa = Math.sin(2 * Math.PI * 5 * rands[12] * this.thread.x / len) * rands[13];
- 		let vibratob = Math.sin(2 * Math.PI * 5 * rands[14] * this.thread.x / len) * rands[15];
- 		let vibratoc = Math.sin(2 * Math.PI * 5 * rands[16] * this.thread.x / len) * rands[17];
+  		let vibratoa = Math.sin(2 * Math.PI * 7 * rands[12] * this.thread.x / len) * rands[13] * 2;
+ 		let vibratob = Math.sin(2 * Math.PI * 7 * rands[14] * this.thread.x / len) * rands[15] * 2;
+ 		let vibratoc = Math.sin(2 * Math.PI * 7 * rands[16] * this.thread.x / len) * rands[17] * 2;
 
 		let a = 0.0
 		a += rands[0] * Math.sin(omega + vibratoa);
@@ -308,7 +308,7 @@ make();
 		//Fade Out
 		d *= (Math.atan(-(4 + 80 * rands[18]) * (this.thread.x / len - duration)) + Math.PI / 2) / Math.PI;
 		//Fade In
-		d *= (Math.atan((20 + 100 * rands[19]) * (this.thread.x / len - 0.1 * rands[20])) + Math.PI / 2) / Math.PI;
+		d *= (Math.atan((20 + 100 * rands[19]) * (this.thread.x / len - 0.2 * rands[20] + 0.1)) + Math.PI / 2) / Math.PI;
 		return d
 		//}
 		
