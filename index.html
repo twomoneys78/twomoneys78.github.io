@@ -41,7 +41,7 @@ return ys;
 class Instrument {
 
 //per instrument
-constructor(tone,cvName) {
+constructor(tone,cvName,waveFunction) {
 	this.tone = tone
 
 	let leftVol = Math.random();
@@ -49,9 +49,10 @@ constructor(tone,cvName) {
 
 	this.rands = new Float32Array(64);
 	for(let i = 0;i < this.rands.length;++i) this.rands[i] = Math.random();
+	this.wave = waveFunction
 	
 	if(cvName) {
-		let xs = wave(audioCtx.sampleRate,0,this.rands,0.5);
+		let xs = this.wave(audioCtx.sampleRate,0,this.rands,0.5);
 		console.log(this.rands[0] + " " + this.rands[1] + " " + this.rands[2])
 		let cv = document.getElementById(cvName);
 		console.log(cv);
@@ -73,7 +74,7 @@ render(buffer,offset,tone,duration,vol) {
 	const channels = 2;
 	for(var channel = 0; channel < channels; channel++) {
 	var nowBuffering = buffer.getChannelData(channel);
-	var xs = wave(audioCtx.sampleRate,this.tone + tone,this.rands,duration);
+	var xs = this.wave(audioCtx.sampleRate,this.tone + tone,this.rands,duration);
 	for(let i = 0;i < xs.length;++i) if(i + offset + n < nowBuffering.length) nowBuffering[i + offset + n] += xs[i] * 0.2 * vol * this.chVols[channel];
 }	
 }
@@ -169,6 +170,7 @@ document.getElementById("cnewbasescale").innerHTML = document.getElementById("ne
 document.getElementById("cscale").innerHTML = document.getElementById("scale").innerHTML;
 document.getElementById("cv2").src = document.getElementById("cv1").toDataURL();
 document.getElementById("cv22").src = document.getElementById("cv11").toDataURL();
+document.getElementById("cv222").src = document.getElementById("cv111").toDataURL();
 
 playing = true;
 
@@ -228,21 +230,29 @@ myArrayBuffer = audioCtx.createBuffer(channels, frameCount, audioCtx.sampleRate)
 ms = [];
 
 //Begleitung
-	ins = new Instrument(-12,"cv1");
+	ins = new Instrument(-12,"cv1",waveGPU);
 for(let i = 0;i < 3;++i)
 {
 
 	ms.push(new Melody(2,ins));
 }
 
+
 //Sound
-	ins = new Instrument(0,"cv11");
+	ins = new Instrument(0,"cv11",waveGPU);
 for(let i = 0;i < 3;++i) {
 
 	
 	ms.push(new Melody(1,ins));
 }
 
+//Bongos
+	ins = new Instrument(0,"cv111",bongoGPU);
+for(let i = 0;i < 3;++i) {
+
+	
+	ms.push(new Melody(1,ins));
+}
 
 make();
 } else window.setTimeout(sound,10);
@@ -257,21 +267,29 @@ make();
 	  return 2 * (y - Math.floor(y)) - 1;
 	});
 	
-	/*function sawtooth(x) {
-	  let y = x / Math.PI * 2;
-	  return 2 * (y - Math.floor(y)) - 1;
-	}	*/
-	
-	function wave(len,tone,rands,duration) {
-		let xs = waveGPU(len,tone,rands,duration);
-		/*var max = -1000000;
-		var min = 1000000;
-		for(let i = 0;i < xs.length;++i) if(xs[i] > max) max = xs[i]; else if(xs[i] < min) min = xs[i];
-		var a = Math.max(Math.abs(max),Math.abs(min));
-		for(let i = 0;i < xs.length;++i) xs[i] = 2 * (xs[i] - min) / (max - min) - 1;
-		*/
-		return xs;
-	}
+	let bongoGPU = gpu.createKernel(function(len,tone,rands,duration) {
+		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(tone % 12 - 12) / 12.0) * Math.PI
+		let omega2 = 110.0 * this.thread.x / len * (rands[41] * 0.1 + 0.9)
+		
+  		let vibratoa = Math.sin(2 * Math.PI * 1 * rands[12] * this.thread.x / len) * rands[13] * 1;
+ 		let vibratob = Math.sin(2 * Math.PI * 1 * rands[14] * this.thread.x / len) * rands[15] * 1;
+
+		let a = 0.0
+		a += rands[0] * Math.sin(omega + vibratoa);
+		a += rands[1] * Math.sign(Math.sin(omega + vibratoa));
+		a += rands[2] * sawtooth(omega + vibratoa);
+		a /= rands[0] + rands[1] + rands[2]
+
+		let b = rands[3] * Math.cos(omega2 + vibratob);
+		b += rands[4] * Math.sign(Math.cos(omega2 + vibratob));
+		b += rands[5] * sawtooth(omega2 + vibratob);
+		b /= rands[3] + rands[4] + rands[5]
+
+		a *= (b + 2 + 2 * rands[5]) / (3 + 2 * rands[5])
+		//Fade Out
+		a *= (Math.atan(-(10 + 80 * rands[18]) * (this.thread.x / len - 0.25 * duration)) + Math.PI / 2) / Math.PI;
+		return a
+  	}).setOutput([audioCtx.sampleRate]); // over 1 second
 	
 	let waveGPU = gpu.createKernel(function(len,tone,rands,duration) {
 	//function waveGPU(len,tone,rands,duration) {
@@ -347,8 +365,9 @@ new base scale : <span id="newbasescale"></span>
 <br>
 scale : <span id="scale"></span>
 <br>
-<canvas width=800 height=800 style="width:45%;height:200px" id="cv1"></canvas>
-<canvas width=800 height=800 style="width:45%;height:200px" id="cv11"></canvas>
+<canvas width=800 height=800 style="width:30%;height:200px" id="cv1"></canvas>
+<canvas width=800 height=800 style="width:30%;height:200px" id="cv11"></canvas>
+<canvas width=800 height=800 style="width:30%;height:200px" id="cv111"></canvas>
 </fieldset>
 
 
@@ -364,8 +383,9 @@ new base scale : <span id="cnewbasescale"></span>
 <br>
 scale : <span id="cscale"></span>
 <br>
-<img width=800 height=800 style="width:45%;height:200px" id="cv2"></canvas>
-<img width=800 height=800 style="width:45%;height:200px" id="cv22"></canvas>
+<img width=800 height=800 style="width:30%;height:200px" id="cv2"></canvas>
+<img width=800 height=800 style="width:30%;height:200px" id="cv22"></canvas>
+<img width=800 height=800 style="width:30%;height:200px" id="cv222"></canvas>
 </fieldset>
 
 </body>
