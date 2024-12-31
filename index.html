@@ -171,7 +171,7 @@ document.getElementById("cscale").innerHTML = document.getElementById("scale").i
 document.getElementById("cv2").src = document.getElementById("cv1").toDataURL();
 document.getElementById("cv22").src = document.getElementById("cv11").toDataURL();
 document.getElementById("cv222").src = document.getElementById("cv111").toDataURL();
-
+document.getElementById("rate").style.visibility = "visible"
 playing = true;
 
 sound();
@@ -277,15 +277,15 @@ make();
 		let a = 0.0
 		a += rands[0] * Math.sin(omega + vibratoa);
 		a += rands[1] * Math.sign(Math.sin(omega + vibratoa));
-		a += rands[2] * sawtooth(omega + vibratoa);
-		a /= rands[0] + rands[1] + rands[2]
+		//a += rands[2] * sawtooth(omega + vibratoa);
+		a /= rands[0] + rands[1]// + rands[2]
 
 		let b = rands[3] * Math.cos(omega2 + vibratob);
 		b += rands[4] * Math.sign(Math.cos(omega2 + vibratob));
-		b += rands[5] * sawtooth(omega2 + vibratob);
-		b /= rands[3] + rands[4] + rands[5]
+		//b += rands[5] * sawtooth(omega2 + vibratob);
+		b /= rands[3] + rands[4]// + rands[5]
 
-		a *= (b + 2 + 2 * rands[5]) / (3 + 2 * rands[5])
+		a *= (b + 2 + 2 * rands[6]) / (3 + 2 * rands[6])
 		//Fade Out
 		a *= (Math.atan(-(10 + 80 * rands[18]) * (this.thread.x / len - 0.25 * duration)) + Math.PI / 2) / Math.PI;
 		return a
@@ -341,7 +341,7 @@ make();
 </script>
 <br>
 <button onclick="this.style.visibility='hidden';sound()" style='width:25%;height:25%;font-size:3em;position:absolute;'>Sound</button>
-<!--<button onclick="source.stop()">Next please</button>-->
+<button onclick="source.stop()">Next please</button>
 <br>
 Seconds : 
 <select id="sec">
@@ -373,6 +373,12 @@ scale : <span id="scale"></span>
 
 <fieldset>
 <legend>Current Data</legend>
+<fieldset id="rate" style="visibility:hidden">
+<legend>
+Rate this song
+</legend>
+<button onclick="ratebad">bad</button><button onclick="rategood">GOOD</button>
+</fieldset>
 base : <span id="cbase"></span>
 <br>
 base steps : <span id="cbasesteps"></span>
