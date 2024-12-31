@@ -323,6 +323,8 @@ make();
 		d /= rands[9] + rands[10] * 0.5 + rands[11] * 0.25
 		
 		//Envelope
+		//Reverb
+		d *= (Math.cos(omega / 20 * rands[30]) + 2 + 2 * rands[31]) / (3 + 2 * rands[31])
 		//Fade Out
 		d *= (Math.atan(-(4 + 80 * rands[18]) * (this.thread.x / len - duration)) + Math.PI / 2) / Math.PI;
 		//Fade In
