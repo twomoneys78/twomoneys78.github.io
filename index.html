@@ -168,6 +168,7 @@ document.getElementById("csteps").innerHTML = document.getElementById("steps").i
 document.getElementById("cnewbasescale").innerHTML = document.getElementById("newbasescale").innerHTML;
 document.getElementById("cscale").innerHTML = document.getElementById("scale").innerHTML;
 document.getElementById("cv2").src = document.getElementById("cv1").toDataURL();
+document.getElementById("cv22").src = document.getElementById("cv11").toDataURL();
 
 playing = true;
 
@@ -236,7 +237,7 @@ myArrayBuffer = audioCtx.createBuffer(channels, frameCount, audioCtx.sampleRate)
 ms = [];
 
 //Begleitung
-	ins = new Instrument(-12,0);
+	ins = new Instrument(-12,"cv1");
 for(let i = 0;i < 3;++i)
 {
 
@@ -244,7 +245,7 @@ for(let i = 0;i < 3;++i)
 }
 
 //Sound
-	ins = new Instrument(0,"cv1");
+	ins = new Instrument(0,"cv11");
 for(let i = 0;i < 3;++i) {
 
 	
@@ -316,7 +317,7 @@ make();
 		//Fade Out
 		d *= (Math.atan(-(4 + 80 * rands[18]) * (this.thread.x / len - duration)) + Math.PI / 2) / Math.PI;
 		//Fade In
-		d *= (Math.atan((20 + 100 * rands[18]) * (this.thread.x / len - 0.1 * rands[19])) + Math.PI / 2) / Math.PI;
+		d *= (Math.atan((20 + 100 * rands[19]) * (this.thread.x / len - 0.1 * rands[20])) + Math.PI / 2) / Math.PI;
 		return d
 		//}
 		
@@ -354,7 +355,9 @@ steps : <span id="steps"></span>
 new base scale : <span id="newbasescale"></span>
 <br>
 scale : <span id="scale"></span>
-<canvas width=800 height=800 style="width:100%;height:200px" id="cv1"></canvas>
+<br>
+<canvas width=800 height=800 style="width:45%;height:200px" id="cv1"></canvas>
+<canvas width=800 height=800 style="width:45%;height:200px" id="cv11"></canvas>
 </fieldset>
 
 
@@ -369,7 +372,9 @@ steps : <span id="csteps"></span>
 new base scale : <span id="cnewbasescale"></span>
 <br>
 scale : <span id="cscale"></span>
-<img width=800 height=800 style="width:100%;height:200px" id="cv2"></canvas>
+<br>
+<img width=800 height=800 style="width:45%;height:200px" id="cv2"></canvas>
+<img width=800 height=800 style="width:45%;height:200px" id="cv22"></canvas>
 </fieldset>
 
 </body>
