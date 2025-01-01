@@ -9,6 +9,45 @@
 
 <script>
 
+
+let rseed = 100
+
+let __random = Math.random
+
+Math.random = function() {
+    // LCG-Konstanten (empirisch bewährt)
+    rseed = (rseed * 1664525 + 1013904223) % 4294967296;
+    return rseed / 4294967296;
+};
+
+let bads = [-100]
+let goods = [100];
+
+
+function nextseed() {
+	let min = Math.min(Math.min(...bads),Math.min(...goods))
+	let max = Math.max(Math.max(...bads),Math.max(...goods))
+	let s = min + __random() * (max - min)
+
+	for(let i = 0;i < 20;++i) {
+		bads.forEach((b) => {s += 0.001 * (s - b)})
+		goods.forEach((g) => {s += 0.001 * (g - s)})
+	}
+		
+	rseed = s
+	document.getElementById("rseed").innerHTML = rseed
+}
+
+function rategood() {
+	goods.push(parseFloat(document.getElementById("crseed").innerHTML))
+	document.getElementById("rate").style.visibility = "hidden"
+}
+
+function ratebad() {
+	bads.push(parseFloat(document.getElementById("crseed").innerHTML))
+	document.getElementById("rate").style.visibility = "hidden"
+}
+
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 var scale = new Array(18);
@@ -95,7 +134,6 @@ let n = rand(sc.length)
 for(let i = 0;i < n;++i) sc.unshift(sc.pop())
 sc = sc.concat(sc)
 
-document.getElementById("base").innerHTML = "sc = [" + sc + "]";
 scale = sc2scale(sc,rand(12) - 6)
 document.getElementById("scale").innerHTML = "[" + scale + "]";
 }
@@ -163,10 +201,7 @@ source.buffer = myArrayBuffer;
 
 source.connect(audioCtx.destination);
 source.start();
-document.getElementById("cbase").innerHTML = document.getElementById("base").innerHTML;
-document.getElementById("cbasesteps").innerHTML = document.getElementById("basesteps").innerHTML;
-document.getElementById("csteps").innerHTML = document.getElementById("steps").innerHTML;
-document.getElementById("cnewbasescale").innerHTML = document.getElementById("newbasescale").innerHTML;
+document.getElementById("crseed").innerHTML = document.getElementById("rseed").innerHTML;
 document.getElementById("cscale").innerHTML = document.getElementById("scale").innerHTML;
 document.getElementById("cv2").src = document.getElementById("cv1").toDataURL();
 document.getElementById("cv22").src = document.getElementById("cv11").toDataURL();
@@ -210,6 +245,9 @@ play();
 var speed;
 
 function sound() {
+
+	nextseed()
+	document.getElementById("rseed").innerHTML = rseed
 
 	let bpm = 60 + Math.random() * 60
 //speed = 0.15 + 0.2 * Math.random();
@@ -310,7 +348,7 @@ make();
 	let waveGPU = gpu.createKernel(function(len,tone,rands) {		
 		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(0 + tone) / 12.0) * Math.PI;
 		
-		let p = 4 * rands[20] + 1
+		let p = 1 * rands[20] + 1
 		
   		let vibratoa = Math.sin(2 * Math.PI * 5 * Math.pow(rands[12],p) * this.thread.x / len) * Math.pow(rands[13],p) * 5;
  		let vibratob = Math.sin(2 * Math.PI * 5 * Math.pow(rands[14],p) * this.thread.x / len) * Math.pow(rands[15],p) * 5;
@@ -359,13 +397,7 @@ Fancy Random : <input type="checkbox" id="fr">
 -->
 <fieldset>
 <legend>Upcoming Data</legend>
-base : <span id="base"></span>
-<br>
-base steps : <span id="basesteps"></span>
-<br>
-steps : <span id="steps"></span>
-<br>
-new base scale : <span id="newbasescale"></span>
+random seed : <span id="rseed"></span>
 <br>
 scale : <span id="scale"></span>
 <br>
@@ -381,15 +413,9 @@ scale : <span id="scale"></span>
 <legend>
 Rate this song
 </legend>
-<button onclick="ratebad">bad</button><button onclick="rategood">GOOD</button>
+<button onclick="ratebad()">bad</button><button onclick="rategood()">GOOD</button>
 </fieldset>
-base : <span id="cbase"></span>
-<br>
-base steps : <span id="cbasesteps"></span>
-<br>
-steps : <span id="csteps"></span>
-<br>
-new base scale : <span id="cnewbasescale"></span>
+random seed : <span id="crseed"></span>
 <br>
 scale : <span id="cscale"></span>
 <br>
