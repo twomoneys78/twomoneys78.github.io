@@ -31,8 +31,8 @@ function nextseed() {
 
 	console.log(min + " / " + max)
 	for(let i = 0;i < 50;++i) {
-		bads.forEach((b) => {if(s != b) s += 1 / (s - b)})
-		goods.forEach((g) => {if(s != g) s += 1 / (g - s)})
+		bads.forEach((b) => {if(s != b) s += 1 / (b - s)})
+		goods.forEach((g) => {if(s != g) s -= 1 / (g - s)})
 	}
 		
 	rseed = s
