@@ -20,20 +20,27 @@ Math.random = function() {
     return rseed / 4294967296;
 };
 
-let bads = [0]
-let goods = [100];
+let bads = []
+let goods = [];
 
 
 function nextseed() {
-	let min = Math.min(Math.min(...bads),Math.min(...goods))
-	let max = Math.max(Math.max(...bads),Math.max(...goods))
-	let s = min + __random() * (max - min)
+	goods.sort()
+	bads.sort() 
 
-	console.log(min + " / " + max)
-	for(let i = 0;i < 50;++i) {
-		bads.forEach((b) => {if(s != b) s += 1 / (b - s)})
-		goods.forEach((g) => {if(s != g) s -= 1 / (g - s)})
+	let s = __random() * 4294967296
+	
+	document.getElementById("ss").innerHTML = ""
+	document.getElementById("goods").innerHTML = goods.join(" , ")
+	document.getElementById("bads").innerHTML = bads.join(" , ")
+	
+		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
+	for(let i = 0;i < 200;++i) {
+		//document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
+		bads.forEach((b) => {if(s != b) s -= 0.01 * 4294967296 / (b - s) * 4294967296})
+		goods.forEach((g) => {if(s != g) s += 0.01 * 4294967296 / (g - s)* 4294967296})
 	}
+		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
 		
 	rseed = s
 	document.getElementById("rseed").innerHTML = rseed
@@ -425,7 +432,13 @@ scale : <span id="cscale"></span>
 <img width=800 height=800 style="width:30%;height:200px" id="cv22"></canvas>
 <img width=800 height=800 style="width:30%;height:200px" id="cv222"></canvas>
 </fieldset>
+<fieldset><legend>bads</legend><span id="bads"></span></fieldset>
+<fieldset><legend>goods</legend><span id="goods"></span></fieldset>
+<fieldset><legend>s Verlauf</legend>
 
+<ol id="ss">
+</ol>
+</fieldset>
 </body>
 </html>
 
