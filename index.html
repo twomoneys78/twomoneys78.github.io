@@ -16,7 +16,7 @@ let __random = Math.random
 
 Math.random = function() {
     // LCG-Konstanten (empirisch bewährt)
-    rseed = (rseed * 1664525 + 1013904223) % 4294967296;
+    rseed = Math.abs((rseed * 1664525 + 1013904223) % 4294967296)
     return rseed / 4294967296;
 };
 
