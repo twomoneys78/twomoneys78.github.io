@@ -1,4 +1,5 @@
-# twomoneys78.github.io# Audio Synthesizer mit GPU.js und Web Audio API
+# twomoneys78.github.io
+# Audio Synthesizer mit GPU.js und Web Audio API
 
 ## Übersicht
 Dieses Projekt implementiert ein Audio-Synthesizer-Tool, das GPU.js für die Berechnung von Audio-Wellenformen und die Web Audio API für die Audioausgabe nutzt. Es bietet Funktionen zur Erzeugung von Melodien, Skalen und benutzerdefinierten Instrumenten, die auf zufälligen Parametern basieren.
