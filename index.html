@@ -40,8 +40,8 @@ function nextseed() {
 		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
 	for(let i = 0;i < 200;++i) {
 		//document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
-		bads.forEach((b) => {if(s != b) s -= 0.02 * 1000 / mypow(b - s,2)})
-		goods.forEach((g) => {if(s != g) s += 0.02 * 1000 / mypow(g - s,2)})
+		bads.forEach((b) => {if(s != b) s -= 0.015 * 1000 / mypow(b - s,2)})
+		goods.forEach((g) => {if(s != g) s += 0.015 * 1000 / mypow(g - s,2)})
 	}
 		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
 		
