@@ -38,10 +38,10 @@ function nextseed() {
 	document.getElementById("bads").innerHTML = bads.join(" , ")
 	
 		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
-	for(let i = 0;i < 500;++i) {
+	for(let i = 0;i < 1000;++i) {
 		//document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
-		bads.forEach((b) => {if(s != b) s -= 0.001 * mypow(1000,2) / mypow(b - s,2)})
-		goods.forEach((g) => {if(s != g) s += 0.001 * mypow(1000,2) / mypow(g - s,2)})
+		bads.forEach((b) => {if(Math.abs(s - b) > 1) s -= 0.001 * mypow(1000,2) / mypow(b - s,2)})
+		goods.forEach((g) => {if(Math.abs(s - g) > 1) s += 0.001 * mypow(1000,2) / mypow(g - s,2)})
 	}
 		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
 		
@@ -125,7 +125,7 @@ render(buffer,offset,tone,duration,vol) {
 	for(var channel = 0; channel < channels; channel++) {
 	var nowBuffering = buffer.getChannelData(channel);
 	var xs = this.wave(audioCtx.sampleRate,this.tone + tone,this.rands,duration);
-	for(let i = 0;i < xs.length;++i) if(i + offset + n < nowBuffering.length) nowBuffering[i + offset + n] += xs[i] * 0.2 * vol * this.chVols[channel];
+	for(let i = 0;i < xs.length;++i) if(i + offset + n < nowBuffering.length) nowBuffering[i + offset + n] += xs[i] * 0.1 * vol * this.chVols[channel];
 }	
 }
 }   
