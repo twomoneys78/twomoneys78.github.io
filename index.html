@@ -374,9 +374,9 @@ make();
 	let waveGPU = gpu.createKernel(function(len,tone,rands,duration) {		
 		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(0 + tone) / 12.0) * Math.PI;
 				
-  		let vibratoa = Math.sin(2 * Math.PI * 5 * rands[12] * this.thread.x / len) * rands[13] * 5;
- 		let vibratob = Math.sin(2 * Math.PI * 5 * rands[14] * this.thread.x / len) * rands[15] * 5;
- 		let vibratoc = Math.sin(2 * Math.PI * 5 * rands[16] * this.thread.x / len) * rands[17] * 5;
+  		let vibratoa = Math.sin(2 * Math.PI * 4 * rands[12] * this.thread.x / len) * rands[13] * 4
+ 		let vibratob = Math.sin(2 * Math.PI * 4 * rands[14] * this.thread.x / len) * rands[15] * 4
+ 		let vibratoc = Math.sin(2 * Math.PI * 4 * rands[16] * this.thread.x / len) * rands[17] * 4
 
 		let a = 0.0
 		a += rands[0] * mypow(Math.sin(omega + vibratoa),rands[30] + 1);
