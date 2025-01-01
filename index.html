@@ -47,7 +47,7 @@ constructor(tone,cvName,waveFunction) {
 	let leftVol = Math.random();
 	this.chVols = [leftVol,1.0 - leftVol];
 
-	this.rands = new Float32Array(64);
+	this.rands = new Float32Array(256);
 	for(let i = 0;i < this.rands.length;++i) this.rands[i] = Math.random();
 	this.wave = waveFunction
 	
@@ -230,7 +230,7 @@ myArrayBuffer = audioCtx.createBuffer(channels, frameCount, audioCtx.sampleRate)
 ms = [];
 
 //Begleitung
-	ins = new Instrument(-12,"cv1",waveGPU);
+	ins = new Instrument(-12,"cv1",wave);
 for(let i = 0;i < 3;++i)
 {
 
@@ -239,7 +239,7 @@ for(let i = 0;i < 3;++i)
 
 
 //Sound
-	ins = new Instrument(0,"cv11",waveGPU);
+	ins = new Instrument(0,"cv11",wave);
 for(let i = 0;i < 3;++i) {
 
 	
@@ -247,7 +247,7 @@ for(let i = 0;i < 3;++i) {
 }
 
 //Bongos
-	ins = new Instrument(0,"cv111",bongoGPU);
+	ins = new Instrument(0,"cv111",bongo);
 for(let i = 0;i < 3;++i) {
 
 	
@@ -259,6 +259,14 @@ make();
 },10);
 }
 
+	let normalize = function(xs) {
+		var max = -1000000;
+		var min = 1000000;
+		for(let i = 0;i < xs.length;++i) if(xs[i] > max) max = xs[i]; else if(xs[i] < min) min = xs[i];
+		var a = Math.max(Math.abs(max),Math.abs(min));
+		for(let i = 0;i < xs.length;++i) xs[i] = 2 * (xs[i] - min) / (max - min) - 1;
+		return xs;
+	};
 
     const gpu = new GPU();
     
@@ -267,43 +275,40 @@ make();
 	  return 2 * (y - Math.floor(y)) - 1;
 	});
 	
-	let bongoGPU = gpu.createKernel(function(len,tone,rands,duration) {
-		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(tone % 12 - 12) / 12.0) * Math.PI
-		let omega2 = 110.0 * this.thread.x / len * (rands[41] * 0.1 + 0.9)
+	let bongoGPU = function(len,tone,rands) {
+		let xs = waveGPU(len,(tone % 12) - 24,rands)
+		let ys = waveGPU(len,-24,rands.slice(64))
 		
-  		let vibratoa = Math.sin(2 * Math.PI * 1 * rands[12] * this.thread.x / len) * rands[13] * 1;
- 		let vibratob = Math.sin(2 * Math.PI * 1 * rands[14] * this.thread.x / len) * rands[15] * 1;
+		for(let i = 0;i < xs.length;++i) 
+			xs[i] *= ys[i] + 1 + 10 * rands[128] * rands[128]
 
-		let a = 0.0
-		a += rands[0] * Math.sin(omega + vibratoa);
-		a += rands[1] * Math.sign(Math.sin(omega + vibratoa));
-		//a += rands[2] * sawtooth(omega + vibratoa);
-		a /= rands[0] + rands[1]// + rands[2]
+		return xs
+ 	}; // over 1 second
 
-		let b = rands[3] * Math.cos(omega2 + vibratob);
-		b += rands[4] * Math.sign(Math.cos(omega2 + vibratob));
-		//b += rands[5] * sawtooth(omega2 + vibratob);
-		b /= rands[3] + rands[4]// + rands[5]
-
-		a *= (b + 2 + 2 * rands[6]) / (3 + 2 * rands[6])
-		//Fade Out
-		a *= (Math.atan(-(10 + 80 * rands[18]) * (this.thread.x / len - 0.25 * duration)) + Math.PI / 2) / Math.PI;
-		return a
-  	}).setOutput([audioCtx.sampleRate / 2]); // over 1 second
+	let bongo = function(len,tone,rands,duration) {
+		let xs = bongoGPU(len,tone,rands)
+		
+		for(let i = 0;i < xs.length;++i) 
+			xs[i] *= Math.atan(-(4 + 80 * rands[129]) * (i / len - duration / 4)) + Math.PI / 2
+		
+		return normalize(xs);
+	}
 	
-	let waveGPU = gpu.createKernel(function(len,tone,rands,duration) {
-	//function waveGPU(len,tone,rands,duration) {
-		//let xs = new Float32Array(audioCtx.sampleRate);
+	let wave = function(len,tone,rands,duration) {
+		let xs = waveGPU(len,tone,rands)
 		
-		//for(let k = 0;k < xs.length;++k) {
-		//this.thread = {x : k};
+		for(let i = 0;i < xs.length;++i) 
+			xs[i] *= (Math.atan(-(4 + 80 * rands[129]) * (i / len - duration)) + Math.PI / 2) / Math.PI;
 		
+		return normalize(xs);
+	}
+	
+	let waveGPU = gpu.createKernel(function(len,tone,rands) {		
 		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(0 + tone) / 12.0) * Math.PI;
-		let omega2 = 50.0 * this.thread.x / len * Math.PI;
 		
-  		let vibratoa = Math.sin(2 * Math.PI * 1 * rands[12] * this.thread.x / len) * rands[13] * 1;
- 		let vibratob = Math.sin(2 * Math.PI * 1 * rands[14] * this.thread.x / len) * rands[15] * 1;
- 		let vibratoc = Math.sin(2 * Math.PI * 1 * rands[16] * this.thread.x / len) * rands[17] * 1;
+  		let vibratoa = Math.sin(2 * Math.PI * 5 * Math.pow(rands[12],2) * this.thread.x / len) * Math.pow(rands[13],2) * 5;
+ 		let vibratob = Math.sin(2 * Math.PI * 5 * Math.pow(rands[14],2) * this.thread.x / len) * Math.pow(rands[15],2) * 5;
+ 		let vibratoc = Math.sin(2 * Math.PI * 5 * Math.pow(rands[16],2) * this.thread.x / len) * Math.pow(rands[17],2) * 5;
 
 		let a = 0.0
 		a += rands[0] * Math.sin(omega + vibratoa);
@@ -324,19 +329,8 @@ make();
 		let d = rands[9] * a + rands[10] * 0.5 * b + rands[11] * 0.25 * c
 		d /= rands[9] + rands[10] * 0.5 + rands[11] * 0.25
 		
-		//Envelope
-		//Reverb
-		d *= (Math.cos(omega2 * rands[30]) + 3 + 5 * rands[31]) / (4 + 5 * rands[31])
-		//Fade Out
-		d *= (Math.atan(-(4 + 80 * rands[18]) * (this.thread.x / len - duration)) + Math.PI / 2) / Math.PI;
-		//Fade In
-		//d *= (Math.atan((10 * rands[19]) * (this.thread.x / len + 0.01 * rands[20])) + Math.PI / 2) / Math.PI;
 		return d
-		//}
-		
-		//return xs;
-  	}).setOutput([audioCtx.sampleRate / 2]); // over 1 second
-	//}
+ 	}).setOutput([audioCtx.sampleRate / 2]); // over 1 second
 
 
 
