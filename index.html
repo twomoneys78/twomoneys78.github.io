@@ -280,11 +280,11 @@ make();
 	});
 	
 	let bongoGPU = function(len,tone,rands) {
-		let xs = waveGPU(len,(tone % 12) - 24,rands)
-		let ys = waveGPU(len,-24,rands.slice(64))
+		let xs = normalize(waveGPU(len,tone - 24,rands))
+		let ys = normalize(waveGPU(len,-36,rands.slice(64)))
 		
 		for(let i = 0;i < xs.length;++i) 
-			xs[i] *= ys[i] + 1 + 10 * rands[128] * rands[128]
+			xs[i] *= ys[i] + 2 + 10 * rands[128] * rands[128]
 
 		return xs
  	}; // over 1 second
