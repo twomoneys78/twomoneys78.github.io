@@ -20,7 +20,7 @@ Math.random = function() {
     return rseed / 4294967296;
 };
 
-let bads = [-100]
+let bads = [0]
 let goods = [100];
 
 
@@ -29,9 +29,12 @@ function nextseed() {
 	let max = Math.max(Math.max(...bads),Math.max(...goods))
 	let s = min + __random() * (max - min)
 
-	for(let i = 0;i < 20;++i) {
-		bads.forEach((b) => {s += 0.001 * (s - b)})
-		goods.forEach((g) => {s += 0.001 * (g - s)})
+	console.log(min + " / " + max)
+	for(let i = 0;i < 50;++i) {
+		bads.forEach((b) => {if(s != b) s += 1 / (s - b)})
+		goods.forEach((g) => {if(s != g) s += 1 / (g - s)})
+		
+		console.log(s)
 	}
 		
 	rseed = s
