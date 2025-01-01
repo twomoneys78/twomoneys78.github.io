@@ -20,8 +20,8 @@ Math.random = function() {
     return rseed / 4294967296;
 };
 
-let bads = [-175.24907902459742 , -331.41238527291375 , 1065.0010487317368 , 1306.8785650219722 , 1399.5846776562314 , 185.91960672598327 , 2307.1622648718253 , 309.84846171448544 , 487.5478366091763 , 674.1411885560777 , 782.0356183130865 , 967.0184224263727]
-let goods = [-110.63842305093026 , 1026.9824653050969 , 1132.4241518940282 , 1200.3014828234388 , 131.06225690891026 , 1543.8636884944783 , 2417.632010892379 , 249.05792337999972 , 250.26597609471307 , 353.9868867609525 , 383.2221326117651 , 587.3033947260041 , 594.3139730526201 , 719.3133721335712 , 881.9937318512366 , 90.09761076672925];
+let bads = [-1096.7646358522445 , -120.654477382037 , -139.19444326340698 , 1300.0143899251289 , 301.61155389899284 , 348.56340765373795 , 451.8855118329487 , 608.6604020509147 , 768.4034348892377 , 801.2220380163719 , 833.9776655979936]
+let goods = [1071.7811561603714 , 1123.9350086583431 , 1132.7774825262668 , 145.61463390091888 , 244.75308086164094 , 556.6915470862456 , 644.9008232053083 , 648.7939477857975 , 90.71243866351473];
 
 
 function nextseed() {
@@ -355,12 +355,10 @@ make();
 	
 	let waveGPU = gpu.createKernel(function(len,tone,rands) {		
 		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(0 + tone) / 12.0) * Math.PI;
-		
-		let p = 1 * rands[20] + 1
-		
-  		let vibratoa = Math.sin(2 * Math.PI * 5 * Math.pow(rands[12],p) * this.thread.x / len) * Math.pow(rands[13],p) * 5;
- 		let vibratob = Math.sin(2 * Math.PI * 5 * Math.pow(rands[14],p) * this.thread.x / len) * Math.pow(rands[15],p) * 5;
- 		let vibratoc = Math.sin(2 * Math.PI * 5 * Math.pow(rands[16],p) * this.thread.x / len) * Math.pow(rands[17],p) * 5;
+				
+  		let vibratoa = Math.sin(2 * Math.PI * 5 * rands[12] * this.thread.x / len) * rands[13] * 5;
+ 		let vibratob = Math.sin(2 * Math.PI * 5 * rands[14] * this.thread.x / len) * rands[15] * 5;
+ 		let vibratoc = Math.sin(2 * Math.PI * 5 * rands[16] * this.thread.x / len) * rands[17] * 5;
 
 		let a = 0.0
 		a += rands[0] * mypow(Math.sin(omega + vibratoa),rands[30] + 1);
