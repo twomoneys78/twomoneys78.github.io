@@ -28,7 +28,7 @@ function nextseed() {
 	goods.sort()
 	bads.sort() 
 
-	let s = __random() * 4294967296
+	let s = __random() * 1000
 	
 	document.getElementById("ss").innerHTML = ""
 	document.getElementById("goods").innerHTML = goods.join(" , ")
@@ -37,8 +37,8 @@ function nextseed() {
 		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
 	for(let i = 0;i < 200;++i) {
 		//document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
-		bads.forEach((b) => {if(s != b) s -= 0.01 * 4294967296 / (b - s) * 4294967296})
-		goods.forEach((g) => {if(s != g) s += 0.01 * 4294967296 / (g - s)* 4294967296})
+		bads.forEach((b) => {if(s != b) s -= 0.1 * 1000 / (b - s)})
+		goods.forEach((g) => {if(s != g) s += 0.1 * 1000 / (g - s)})
 	}
 		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
 		
