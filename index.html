@@ -382,22 +382,22 @@ make();
 	let waveGPU = gpu.createKernel(function(len,tone,rands,duration) {		
 		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(0 + tone) / 12.0) * Math.PI;
 				
-  		let vibratoa = Math.sin(2 * Math.PI * 4 * rands[12] * this.thread.x / len) * rands[13] * 4
- 		let vibratob = Math.sin(2 * Math.PI * 4 * rands[14] * this.thread.x / len) * rands[15] * 4
- 		let vibratoc = Math.sin(2 * Math.PI * 4 * rands[16] * this.thread.x / len) * rands[17] * 4
+  		let vibratoa = Math.sin(2 * Math.PI * 3 * rands[12] * this.thread.x / len) * rands[13] * 3
+ 		let vibratob = Math.sin(2 * Math.PI * 3 * rands[14] * this.thread.x / len) * rands[15] * 3
+ 		let vibratoc = Math.sin(2 * Math.PI * 3 * rands[16] * this.thread.x / len) * rands[17] * 3
 
 		let a = 0.0
-		a += rands[0] * mypow(Math.sin(omega + vibratoa),rands[30] + 1);
+		a += rands[0] * mypow(Math.sin(omega + vibratoa),2 * rands[30] + 1);
 		a += rands[1] * Math.sign(Math.sin(omega + vibratoa));
 		a += rands[2] * sawtooth(omega + vibratoa);
 		a /= rands[0] + rands[1] + rands[2]
 		
-		let b = rands[3] * mypow(Math.sin(omega * 2 + vibratob),rands[31] + 1);
+		let b = rands[3] * mypow(Math.sin(omega * 2 + vibratob),2 * rands[31] + 1);
 		b += rands[4] * Math.sign(Math.sin(omega * 2 + vibratob));
 		b += rands[5] * sawtooth(omega * 2 + vibratob);
 		b /= rands[3] + rands[4] + rands[5]
 		
-		let c = rands[6] * mypow(Math.sin(omega * 3 + vibratoc),rands[32] + 1);
+		let c = rands[6] * mypow(Math.sin(omega * 3 + vibratoc),2 * rands[32] + 1);
 		c += rands[7] * Math.sign(Math.sin(omega * 3 + vibratoc));
 		c += rands[8] * sawtooth(omega * 3 + vibratoc);
 		c /= rands[6] + rands[7] + rands[8]
