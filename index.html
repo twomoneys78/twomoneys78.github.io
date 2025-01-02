@@ -38,10 +38,18 @@ function nextseed() {
 	document.getElementById("bads").innerHTML = bads.join(" , ")
 	
 		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
-	for(let i = 0;i < 1000;++i) {
-		//document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
-		bads.forEach((b) => {if(Math.abs(s - b) > 1) s -= 0.001 * mypow(1000,2) / mypow(b - s,2)})
-		goods.forEach((g) => {if(Math.abs(s - g) > 1) s += 0.001 * mypow(1000,2) / mypow(g - s,2)})
+	for(let i = 0;i < 100;++i) {
+		let v = 0
+		let n = 0
+		
+		bads.forEach((b) => {{v -= 10000 / mypow(b - s,2);n += 1}})
+		goods.forEach((g) => {{v += 0.00001 * mypow(g - s,2); n += 1}})
+		
+		/*
+		if(n > 0) v /= n
+		
+		document.getElementById("ss").innerHTML += "<li>v = " + v + "</li>"*/
+		s += v
 	}
 		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
 		
