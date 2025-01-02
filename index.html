@@ -42,8 +42,8 @@ function nextseed() {
 		let v = 0
 		let n = 0
 		
-		bads.forEach((b) => {{v -= 10000 / mypow(b - s,2);n += 1}})
-		goods.forEach((g) => {{v += 0.00001 * mypow(g - s,2); n += 1}})
+		bads.forEach((b) => {{v -= 1000 / mypow(b - s,2);n += 1}})
+		goods.forEach((g) => {{v += 0.000001 * mypow(g - s,2); n += 1}})
 		
 		/*
 		if(n > 0) v /= n
