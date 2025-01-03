@@ -40,21 +40,14 @@ function nextsong() {
 		let v = new Float32Array(randoms.length)
 
 		for(let i = 0;i < v.length;++i) v[i] = 0		
-		bads.forEach((b) => {for(let i = 0;i < v.length;++i) if(b[i] != song[i]) {v[i] -= 1 / mypow(b[i] - song[i],2)}})		
-		let sum = 0
-		for(let i = 0;i < v.length;++i) sum += v[i] * v[i]
-		sum = Math.sqrt(sum)		
-		if(sum)
-		for(let i = 0;i < v.length;++i) song[i] += 0.01 * v[i] / sum
-		
-		for(let i = 0;i < v.length;++i) v[i] = 0		
-		goods.forEach((g) => {for(let i = 0;i < v.length;++i) {v[i] += mypow(g[i] - song[i],2)}})
+		bads.forEach((b) => {for(let i = 0;i < v.length;++i) v[i] -= b[i] - song[i]})		
+		goods.forEach((g) => {for(let i = 0;i < v.length;++i) v[i] += g[i] - song[i]})
+
 		sum = 0
 		for(let i = 0;i < v.length;++i) sum += v[i] * v[i]
 		sum = Math.sqrt(sum)		
 		if(sum)
 		for(let i = 0;i < v.length;++i) song[i] += 0.01 * v[i] / sum
-		console.log(sum)
 	}
 	
 	//for(let i = 0;i < song.length;++i) song[i] = clamp(song[i])
