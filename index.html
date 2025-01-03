@@ -230,7 +230,6 @@ source.buffer = myArrayBuffer;
 
 source.connect(audioCtx.destination);
 source.start();
-document.getElementById("crseed").innerHTML = document.getElementById("rseed").innerHTML;
 document.getElementById("cscale").innerHTML = document.getElementById("scale").innerHTML;
 document.getElementById("cv2").src = document.getElementById("cv1").toDataURL();
 document.getElementById("cv22").src = document.getElementById("cv11").toDataURL();
@@ -439,7 +438,6 @@ Fancy Random : <input type="checkbox" id="fr">
 -->
 <fieldset>
 <legend>Upcoming Data</legend>
-random seed : <span id="rseed"></span>
 <br>
 scale : <span id="scale"></span>
 <br>
@@ -458,7 +456,6 @@ Rate this song
 <button onclick="ratebad()"  style='width:25%;height:25%;font-size:3em'>bad</button>
 <button onclick="rategood()"  style='width:25%;height:25%;font-size:3em'>GOOD</button>
 </fieldset>
-random seed : <span id="crseed"></span>
 <br>
 scale : <span id="cscale"></span>
 <br>
@@ -466,13 +463,8 @@ scale : <span id="cscale"></span>
 <img width=800 height=800 style="width:30%;height:200px" id="cv22"></canvas>
 <img width=800 height=800 style="width:30%;height:200px" id="cv222"></canvas>
 </fieldset>
-<fieldset><legend>bad random seeds</legend><span id="bads"></span></fieldset>
-<fieldset><legend>good random seeds</legend><span id="goods"></span></fieldset>
-<fieldset><legend>random seed Verlauf</legend>
-
-<ol id="ss">
-</ol>
-</fieldset>
+<fieldset><legend>number of bad songs</legend><span id="bads"></span></fieldset>
+<fieldset><legend>number of good songs</legend><span id="goods"></span></fieldset>
 </body>
 </html>
 
