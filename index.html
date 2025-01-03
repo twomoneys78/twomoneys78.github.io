@@ -9,16 +9,15 @@
 
 <script>
 
+let ___random = Math.random
+let randoms = new Float32Array(10000)
+for(let i = 0;i < randoms.length;++i) randoms[i] = ___random()
 
-let rseed = 100
-
-let __random = Math.random
+let randomi = 0
 
 Math.random = function() {
-    // LCG-Konstanten (empirisch bewährt)
-    rseed = Math.abs((rseed * 1664525 + 1013904223) % 4294967296)
-    return rseed / 4294967296;
-};
+	return randoms[randomi++]
+}
 
 let bads = []
 let goods = [];
@@ -27,43 +26,45 @@ let goods = [];
 		return Math.sign(x) * Math.pow(Math.abs(x),y);
 	}
 	
-function nextseed() {
-	goods = goods.sort()
-	bads = bads.sort() 
 
-	let s = __random() * 1000
+function nextsong() {
+	let song = new Float32Array(randoms.length)
+	for(let i = 0;i < randoms.length;++i) song[i] = ___random()
 	
-	document.getElementById("ss").innerHTML = ""
-	document.getElementById("goods").innerHTML = goods.join(" , ")
-	document.getElementById("bads").innerHTML = bads.join(" , ")
-	
-		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
-	for(let i = 0;i < 1000;++i) {
-		let v = 0
-		let n = 0
+	for(let i = 0;i < 100;++i) {
+		let v = new Float32Array(randoms.length)
+		for(let i = 0;i < v.length;++i) v[i] = 0
 		
-		bads.forEach((b) => {{v -= 1000 / mypow(b - s,2);n += 1}})
-		goods.forEach((g) => {{v += 0.000001 * mypow(g - s,2); n += 1}})
+		bads.forEach((b) => {for(let i = 0;i < v.length;++i) if(b[i] != song[i]) {v[i] -= 1 / (b[i] - song[i])}})		
+		let sum = 0
+		for(let i = 0;i < v.length;++i) sum += v[i] * v[i]
+		sum = Math.sqrt(sum)		
+		if(sum)
+		for(let i = 0;i < v.length;++i) song[i] += 0.01 * v[i] / sum
 		
-		/*
-		if(n > 0) v /= n
-		
-		document.getElementById("ss").innerHTML += "<li>v = " + v + "</li>"*/
-		s += v
+		goods.forEach((g) => {for(let i = 0;i < v.length;++i) {v[i] += g[i] - song[i]}})
+		sum = 0
+		for(let i = 0;i < v.length;++i) sum += v[i] * v[i]
+		sum = Math.sqrt(sum)		
+		if(sum)
+		for(let i = 0;i < v.length;++i) song[i] += 0.01 * v[i] / sum
+		console.log(sum)
 	}
-		document.getElementById("ss").innerHTML += "<li>" + s + "</li>"
-		
-	rseed = s
-	document.getElementById("rseed").innerHTML = rseed
+	
+	document.getElementById("bads").innerHTML = bads.length
+	document.getElementById("goods").innerHTML = goods.length
+	
+	randomi = 0
+	randoms = song.slice()
 }
 
 function rategood() {
-	goods.push(parseFloat(document.getElementById("crseed").innerHTML))
+	goods.push(randoms.slice())
 	document.getElementById("rate").style.visibility = "hidden"
 }
 
 function ratebad() {
-	bads.push(parseFloat(document.getElementById("crseed").innerHTML))
+	bads.push(randoms.slice())
 	document.getElementById("rate").style.visibility = "hidden"
 	source.stop()
 }
@@ -74,10 +75,7 @@ var scale = new Array(18);
 
 function rand(n) {
 return Math.floor(n * Math.random() * 0.99);
-}
-
-for(let i = 0;i < 20;++i) console.log(rand(3))
-	
+}	
 	
 function shuffle(xs) {
 xs = xs.slice(0);
@@ -266,9 +264,8 @@ var speed;
 
 function sound() {
 
-	nextseed()
-	document.getElementById("rseed").innerHTML = rseed
-
+	nextsong()
+	
 	let bpm = 60 + Math.random() * 60
 //speed = 0.15 + 0.2 * Math.random();
 	speed = 0.175 + Math.random() * 0.15
