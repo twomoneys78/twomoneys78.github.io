@@ -57,7 +57,7 @@ function nextsong() {
 		console.log(sum)
 	}
 	
-	for(let i = 0;i < song.length;++i) song[i] = clamp(song[i])
+	//for(let i = 0;i < song.length;++i) song[i] = clamp(song[i])
 	
 	document.getElementById("bads").innerHTML = bads.length
 	document.getElementById("goods").innerHTML = goods.length
@@ -187,14 +187,17 @@ this.min = rand(scale.length);
 this.max = rand(scale.length);	
 	
 	 }
+	 
+	let note = this.min + rand(this.max -  this.min);
+	let duration = Math.random()
 	
 switch(rand(3)) {
 	    case 0:
 		break;
 	   case 1:
-		this.note = this.min + rand(this.max -  this.min);
+		this.note = note
 	   case 2:
-		this.instrument.render(buffer,offset,scale[this.note],Math.random(),vs[i]);
+		this.instrument.render(buffer,offset,scale[this.note],duration,vs[i]);
 }
 	
 this.i += 1;
