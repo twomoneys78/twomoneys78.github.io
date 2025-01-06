@@ -36,6 +36,10 @@ function nextsong() {
 	let song = new Float32Array(randoms.length)
 	for(let i = 0;i < randoms.length;++i) song[i] = ___random()
 	
+	console.log("song : ",song[0])
+	bads.forEach((b) => {console.log("b : ",b[0])})
+	goods.forEach((g) => {console.log("g : ",g[0])})
+	
 	for(let i = 0;i < 1000;++i) {
 		let v = new Float32Array(randoms.length)
 
@@ -47,10 +51,11 @@ function nextsong() {
 		for(let i = 0;i < v.length;++i) sum += v[i] * v[i]
 		sum = Math.sqrt(sum)		
 		if(sum)
-		for(let i = 0;i < v.length;++i) song[i] += 0.001 * v[i] / sum
+		for(let i = 0;i < v.length;++i) song[i] += 0.01 * v[i] / sum
 	}
+	console.log("song : ",song[0])
 	
-	//for(let i = 0;i < song.length;++i) song[i] = clamp(song[i])
+	for(let i = 0;i < song.length;++i) song[i] = clamp(song[i])
 	
 	document.getElementById("bads").innerHTML = bads.length
 	document.getElementById("goods").innerHTML = goods.length
