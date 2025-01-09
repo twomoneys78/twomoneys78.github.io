@@ -20,7 +20,7 @@ Math.random = function() {
 }
 
 let bads = []
-let goods = [];
+//let goods = [];
 
 	function mypow(x,y) {
 		return Math.sign(x) * Math.pow(Math.abs(x),y);
@@ -38,12 +38,12 @@ function nextsong() {
 	
 	console.log("song : ",song[0])
 	bads.forEach((b) => {console.log("b : ",b[0])})
-	goods.forEach((g) => {console.log("g : ",g[0])})
+	//goods.forEach((g) => {console.log("g : ",g[0])})
 	
 	let vsum
 	for(let i = 0;i < 100;++i) {
 		vsum = new Float32Array(randoms.length)
-
+/*
 		for(let i = 0;i < vsum.length;++i) vsum[i] = 0		
 		goods.forEach((g) => {
 			let v = new Float32Array(randoms.length)
@@ -57,6 +57,7 @@ function nextsong() {
 			for(let i = 0;i < v.length;++i) vsum[i] += v[i] * (1 - 1 / (5 * sum * sum + 1))
 		})
 		if(goods.length > 0) for(let i = 0;i < song.length;++i) song[i] += 0.02 * vsum[i] / goods.length
+*/
 		
 		for(let i = 0;i < vsum.length;++i) vsum[i] = 0
 		bads.forEach((b) => {
@@ -68,9 +69,9 @@ function nextsong() {
 			for(let i = 0;i < v.length;++i) sum += Math.abs(v[i])
 			sum /= v.length
 			//sum € [0..1]	
-			for(let i = 0;i < v.length;++i) vsum[i] -= v[i] * 1 / (5 * sum * sum + 1)
+			for(let i = 0;i < v.length;++i) vsum[i] -= v[i] * 1 / (20 * sum * sum + 1)
 		})		
-		if(bads.length > 0) for(let i = 0;i < song.length;++i) song[i] += 0.02 * vsum[i] / bads.length
+		if(bads.length > 0) for(let i = 0;i < song.length;++i) song[i] += 0.01 * vsum[i] / bads.length
 	}
 	console.log("song : ",song[0])
 	console.log("vsum",vsum[0])
@@ -78,16 +79,18 @@ function nextsong() {
 	for(let i = 0;i < song.length;++i) song[i] = clamp(song[i])
 	
 	document.getElementById("bads").innerHTML = bads.length
-	document.getElementById("goods").innerHTML = goods.length
+	//document.getElementById("goods").innerHTML = goods.length
 	
 	randomi = 0
 	randoms = song.slice()
 }
 
+/*
 function rategood() {
 	goods.push(randoms.slice())
 	document.getElementById("rate").style.visibility = "hidden"
 }
+*/
 
 function ratebad() {
 	bads.push(randoms.slice())
@@ -472,7 +475,7 @@ scale : <span id="scale"></span>
 Rate this song
 </legend>
 <button onclick="ratebad()"  style='width:25%;height:25%;font-size:3em'>bad</button>
-<button onclick="rategood()"  style='width:25%;height:25%;font-size:3em'>GOOD</button>
+<!--<button onclick="rategood()"  style='width:25%;height:25%;font-size:3em'>GOOD</button>-->
 </fieldset>
 <br>
 scale : <span id="cscale"></span>
@@ -482,7 +485,7 @@ scale : <span id="cscale"></span>
 <img width=800 height=800 style="width:30%;height:200px" id="cv222"></canvas>
 </fieldset>
 <fieldset><legend>number of bad songs</legend><span id="bads"></span></fieldset>
-<fieldset><legend>number of good songs</legend><span id="goods"></span></fieldset>
+<!--<fieldset><legend>number of good songs</legend><span id="goods"></span></fieldset>-->
 </body>
 </html>
 
