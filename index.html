@@ -40,11 +40,13 @@ function nextsong() {
 	bads.forEach((b) => {console.log("b : ",b[0])})
 	goods.forEach((g) => {console.log("g : ",g[0])})
 	
-	let v
+	let vsum
 	for(let i = 0;i < 100;++i) {
-		v = new Float32Array(randoms.length)
+		vsum = new Float32Array(randoms.length)
 
+		for(let i = 0;i < vsum.length;++i) vsum[i] = 0		
 		goods.forEach((g) => {
+			let v = new Float32Array(randoms.length)
 			//song distance
 			for(let i = 0;i < v.length;++i) v[i] = g[i] - song[i]
 			// v[i] € [0..1]
@@ -52,9 +54,13 @@ function nextsong() {
 			for(let i = 0;i < v.length;++i) sum += Math.abs(v[i])
 			sum /= v.length
 			//sum € [0..1]	
-			for(let i = 0;i < v.length;++i) song[i] += 0.001 * v[i] * Math.sqrt(sum)
+			for(let i = 0;i < v.length;++i) vsum[i] += v[i] * (1 - 1 / (10 * sum * sum + 1))
 		})
+		if(goods.length > 0) for(let i = 0;i < song.length;++i) song[i] += 0.01 * vsum[i] / goods.length
+		
+		for(let i = 0;i < vsum.length;++i) vsum[i] = 0
 		bads.forEach((b) => {
+			let v = new Float32Array(randoms.length)
 			//song distance
 			for(let i = 0;i < v.length;++i) v[i] = b[i] - song[i]
 			// v[i] € [0..1]
@@ -62,11 +68,12 @@ function nextsong() {
 			for(let i = 0;i < v.length;++i) sum += Math.abs(v[i])
 			sum /= v.length
 			//sum € [0..1]	
-			for(let i = 0;i < v.length;++i) song[i] -= 0.001 * v[i] / (10 * sum * sum + 1)
+			for(let i = 0;i < v.length;++i) vsum[i] -= v[i] * 1 / (10 * sum * sum + 1)
 		})		
+		if(bads.length > 0) for(let i = 0;i < song.length;++i) song[i] += 0.01 * vsum[i] / bads.length
 	}
 	console.log("song : ",song[0])
-	console.log("v",v[0])
+	console.log("vsum",vsum[0])
 	
 	for(let i = 0;i < song.length;++i) song[i] = clamp(song[i])
 	
