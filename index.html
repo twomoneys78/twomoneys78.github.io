@@ -54,9 +54,9 @@ function nextsong() {
 			for(let i = 0;i < v.length;++i) sum += Math.abs(v[i])
 			sum /= v.length
 			//sum € [0..1]	
-			for(let i = 0;i < v.length;++i) vsum[i] += v[i] * (1 - 1 / (10 * sum * sum + 1))
+			for(let i = 0;i < v.length;++i) vsum[i] += v[i] * (1 - 1 / (5 * sum * sum + 1))
 		})
-		if(goods.length > 0) for(let i = 0;i < song.length;++i) song[i] += 0.01 * vsum[i] / goods.length
+		if(goods.length > 0) for(let i = 0;i < song.length;++i) song[i] += 0.02 * vsum[i] / goods.length
 		
 		for(let i = 0;i < vsum.length;++i) vsum[i] = 0
 		bads.forEach((b) => {
@@ -68,9 +68,9 @@ function nextsong() {
 			for(let i = 0;i < v.length;++i) sum += Math.abs(v[i])
 			sum /= v.length
 			//sum € [0..1]	
-			for(let i = 0;i < v.length;++i) vsum[i] -= v[i] * 1 / (10 * sum * sum + 1)
+			for(let i = 0;i < v.length;++i) vsum[i] -= v[i] * 1 / (5 * sum * sum + 1)
 		})		
-		if(bads.length > 0) for(let i = 0;i < song.length;++i) song[i] += 0.01 * vsum[i] / bads.length
+		if(bads.length > 0) for(let i = 0;i < song.length;++i) song[i] += 0.02 * vsum[i] / bads.length
 	}
 	console.log("song : ",song[0])
 	console.log("vsum",vsum[0])
