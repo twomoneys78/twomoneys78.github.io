@@ -52,7 +52,7 @@ function nextsong() {
 			for(let i = 0;i < v.length;++i) sum += Math.abs(v[i])
 			sum /= v.length
 			//sum € [0..1]	
-			for(let i = 0;i < v.length;++i) song[i] += 0.01 * v[i] / (20 * sum * sum + 1)
+			for(let i = 0;i < v.length;++i) song[i] += 0.01 * v[i] * Math.sqrt(sum)
 		})
 		bads.forEach((b) => {
 			//song distance
