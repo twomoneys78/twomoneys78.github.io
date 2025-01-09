@@ -92,8 +92,10 @@ function rategood() {
 }
 */
 
+let playingrandoms;
+
 function ratebad() {
-	bads.push(randoms.slice())
+	bads.push(playingrandoms.slice())
 	document.getElementById("rate").style.visibility = "hidden"
 	source.stop()
 }
@@ -251,6 +253,7 @@ source.buffer = myArrayBuffer;
 
 source.connect(audioCtx.destination);
 source.start();
+playingrandoms = randoms.slice()
 document.getElementById("cscale").innerHTML = document.getElementById("scale").innerHTML;
 document.getElementById("cv2").src = document.getElementById("cv1").toDataURL();
 document.getElementById("cv22").src = document.getElementById("cv11").toDataURL();
