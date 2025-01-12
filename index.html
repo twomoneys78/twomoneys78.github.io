@@ -33,57 +33,59 @@ function clamp(x) {
 }
 
 function nextsong() {
-	let song = new Float32Array(randoms.length)
-	for(let i = 0;i < randoms.length;++i) song[i] = ___random()
-	
-	console.log("song : ",song[0])
-	bads.forEach((b) => {console.log("b : ",b[0])})
-	//goods.forEach((g) => {console.log("g : ",g[0])})
-	
-	let vsum
-	for(let i = 0;i < 100;++i) {
-		vsum = new Float32Array(randoms.length)
-/*
-		for(let i = 0;i < vsum.length;++i) vsum[i] = 0		
-		goods.forEach((g) => {
-			let v = new Float32Array(randoms.length)
-			//song distance
-			for(let i = 0;i < v.length;++i) v[i] = g[i] - song[i]
-			// v[i] € [0..1]
-			let sum = 0
-			for(let i = 0;i < v.length;++i) sum += Math.abs(v[i])
-			sum /= v.length
-			//sum € [0..1]	
-			for(let i = 0;i < v.length;++i) vsum[i] += v[i] * (1 - 1 / (5 * sum * sum + 1))
-		})
-		if(goods.length > 0) for(let i = 0;i < song.length;++i) song[i] += 0.02 * vsum[i] / goods.length
-*/
-		
-		for(let i = 0;i < vsum.length;++i) vsum[i] = 0
-		bads.forEach((b) => {
-			let v = new Float32Array(randoms.length)
-			//song distance
-			for(let i = 0;i < v.length;++i) v[i] = b[i] - song[i]
-			// v[i] € [0..1]
-			let sum = 0
-			for(let i = 0;i < v.length;++i) sum += Math.abs(v[i])
-			sum /= v.length
-			//sum € [0..1]	
-			for(let i = 0;i < v.length;++i) vsum[i] -= v[i] * 1 / (20 * sum * sum + 1)
-		})		
-		if(bads.length > 0) for(let i = 0;i < song.length;++i) song[i] += 0.001 * vsum[i] / bads.length
-	}
-	console.log("song : ",song[0])
-	console.log("vsum",vsum[0])
-	
-	for(let i = 0;i < song.length;++i) song[i] = clamp(song[i])
-	
-	document.getElementById("bads").innerHTML = bads.length
-	//document.getElementById("goods").innerHTML = goods.length
-	
-	randomi = 0
-	randoms = song.slice()
+    let song = new Float32Array(randoms.length);
+    for (let i = 0; i < randoms.length; ++i) {
+        song[i] = ___random();
+    }
+
+    if (bads.length > 0) {  // Länge prüfen, um den Block auszuführen
+        for (let iteration = 0; iteration < 100; ++iteration) {
+            let vsum = new Float32Array(randoms.length);
+			for(let i = 0;i < vsum.length;++i) vsum[i] = 0
+
+            bads.forEach((b, badIndex) => {
+                let v = new Float32Array(randoms.length);
+ 				for(let i = 0;i < v.length;++i) v[i] = 0
+				let sum = 0;
+
+                for (let i = 0; i < v.length; ++i) {
+                    v[i] = b[i] - song[i];
+                    sum += Math.abs(v[i]);
+                }
+
+                sum /= v.length;
+
+                if (sum < 1e-6) {
+                    sum = 1e-6;
+                }
+
+                let weight = Math.exp(-5 * sum);
+
+                for (let i = 0; i < v.length; ++i) {
+                    vsum[i] -= v[i] * weight;
+                }
+            });
+
+            let learningRate = 0.01 / (1 + iteration * 0.1);
+
+            for (let i = 0; i < song.length; ++i) {
+                song[i] += learningRate * vsum[i] / bads.length;
+                song[i] += 0.001 * (___random() - 0.5);
+            }
+        }
+    }
+
+    for (let i = 0; i < song.length; ++i) {
+        song[i] = clamp(song[i]);
+    }
+
+    randomi = 0;
+    randoms = song.slice();
+    document.getElementById("bads").innerHTML = bads.length;
+    console.log("Optimized song: ", song[0]);
 }
+
+
 
 /*
 function rategood() {
@@ -302,7 +304,7 @@ function sound() {
 	
 	let bpm = 60 + Math.random() * 60
 //speed = 0.15 + 0.2 * Math.random();
-	speed = 0.175 + Math.random() * 0.15
+	speed = 0.175 + Math.random() * 0.13
 //alert(speed) 
 
 	
