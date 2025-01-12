@@ -138,7 +138,7 @@ constructor(tone,cvName,waveFunction) {
 	this.chVols = [leftVol,1.0 - leftVol];
 
 	this.rands = new Float32Array(256);
-	for(let i = 0;i < this.rands.length;++i) this.rands[i] = 0.5 * Math.random() + 0.25;
+	for(let i = 0;i < this.rands.length;++i) this.rands[i] = 0.7 * Math.random() + 0.1;
 	this.wave = waveFunction
 	
 	if(cvName) {
