@@ -9,6 +9,7 @@
 
 <script>
 
+/*
 let ___random = Math.random
 let randoms = new Float32Array(10000)
 for(let i = 0;i < randoms.length;++i) randoms[i] = ___random()
@@ -18,7 +19,7 @@ let randomi = 0
 Math.random = function() {
 	return randoms[randomi++]
 }
-
+*/
 let bads = []
 //let goods = [];
 
@@ -255,7 +256,7 @@ source.buffer = myArrayBuffer;
 
 source.connect(audioCtx.destination);
 source.start();
-playingrandoms = randoms.slice()
+//playingrandoms = randoms.slice()
 document.getElementById("cscale").innerHTML = document.getElementById("scale").innerHTML;
 document.getElementById("cv2").src = document.getElementById("cv1").toDataURL();
 document.getElementById("cv22").src = document.getElementById("cv11").toDataURL();
@@ -300,7 +301,7 @@ var speed;
 
 function sound() {
 
-	nextsong()
+	//nextsong()
 	
 	let bpm = 60 + Math.random() * 60
 //speed = 0.15 + 0.2 * Math.random();
@@ -419,8 +420,8 @@ make();
 		let omega = 440.0 * this.thread.x / len * Math.pow(2.0,(0 + tone) / 12.0) * Math.PI;
 				
 		let va = rands[12]
-		let vb = va * (0.5 * rands[14] + 0.75)
-		let vc = vb * (0.5 * rands[16] + 0.75)
+		let vb = va * (0.2 * rands[14] + 0.9)
+		let vc = vb * (0.2 * rands[16] + 0.9)
   		let vibratoa = Math.sin(2 * Math.PI * 3 * va * this.thread.x / len) * rands[13] * 3
  		let vibratob = Math.sin(2 * Math.PI * 3 * vb * this.thread.x / len) * rands[15] * 3
  		let vibratoc = Math.sin(2 * Math.PI * 3 * vc * this.thread.x / len) * rands[17] * 3
@@ -495,8 +496,8 @@ scale : <span id="cscale"></span>
 <img width=800 height=800 style="width:30%;height:200px" id="cv22"></canvas>
 <img width=800 height=800 style="width:30%;height:200px" id="cv222"></canvas>
 </fieldset>
-<fieldset><legend>number of bad songs</legend><span id="bads"></span></fieldset>
-<!--<fieldset><legend>number of good songs</legend><span id="goods"></span></fieldset>-->
+<!--<fieldset><legend>number of bad songs</legend><span id="bads"></span></fieldset>
+<fieldset><legend>number of good songs</legend><span id="goods"></span></fieldset>-->
 </body>
 </html>
 
