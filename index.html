@@ -4,8 +4,8 @@
 <script src="gpu-browser.min.js"></script>
 
 </head>
-<body>
-<h1>Progress : <span id="abc"></span></h1>
+<body style="background-image:url('back.webp');background-size:100% 100%">
+<h1 style="color:white">Progress : <span id="abc"></span></h1>
 
 <script>
 
@@ -458,14 +458,16 @@ make();
 <br>
 <button onclick="this.style.visibility='hidden';sound()" style='width:25%;height:25%;font-size:3em;position:absolute;'>Sound</button>
 <button onclick="source.stop()" style='width:25%;height:25%;font-size:3em'>Next please</button>
-<br>
+
+<span style="color:white;font-size:3em">
 Seconds : 
-<select id="sec">
+<select id="sec" style="font-size:2em">
 <option value="30" >30</option>
 <option value="60" selected >60</option>
 <option value="120" >120</option>
 <option value="180">180</option>
 </select>
+</span>
 <!--
 Fancy Random : <input type="checkbox" id="fr">
 -->
