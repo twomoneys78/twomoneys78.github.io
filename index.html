@@ -396,8 +396,8 @@ make();
 		c += rands[8] * sawtooth(omega2 + vibratoc);
 		c /= rands[6] + rands[7] + rands[8]
 		
-		let d = rands[9] * a + rands[10] * 0.5 * b + rands[11] * 0.25 * c
-		d /= rands[9] + rands[10] * 0.5 + rands[11] * 0.25
+		let d = 1 * a + rands[10] * 0.5 * b + rands[11] * 0.25 * c
+		d /= 1 + rands[10] * 0.5 + rands[11] * 0.25
 		
 		d *= (Math.atan(-(4 + 80 * rands[129]) * (this.thread.x / len - duration / 4)) + Math.PI / 2) / Math.PI
 		
@@ -442,8 +442,8 @@ make();
 		c += rands[8] * sawtooth(omega * 3 + vibratoc);
 		c /= rands[6] + rands[7] + rands[8]
 		
-		let d = rands[9] * a + rands[10] * 0.5 * b + rands[11] * 0.25 * c
-		d /= rands[9] + rands[10] * 0.5 + rands[11] * 0.25
+		let d = 1 * a + rands[10] * 0.5 * b + rands[11] * 0.25 * c
+		d /= 1 + rands[10] * 0.5 + rands[11] * 0.25
 		
 		d *= (Math.atan(-(4 + 80 * rands[129]) * (this.thread.x / len - duration)) + Math.PI / 2) / Math.PI
 		
