@@ -205,7 +205,7 @@ this.note = 0;
 }
 
 play(buffer,offset) {
-let vs = [1.5,0.5,0.75,0.5,1,0.5,0.75,0.5];
+let vs = [1.5,0.75,0.75,0.75,1,0.75,0.75,0.75];
 let i = this.i % vs.length;
 
 if(this.i % (vs.length * 4) == 0) {
@@ -381,17 +381,17 @@ make();
  		let vibratoc = Math.sin(2 * Math.PI * 3 * vc * this.thread.x / len) * rands[17] * 3
 
 		let a = 0.0
-		a += rands[0] * mypow(Math.sin(omega + vibratoa),rands[30] + 1);
+		a += rands[0] * mypow(Math.sin(omega + vibratoa),rands[30] + 0.5);
 		a += rands[1] * Math.sign(Math.sin(omega + vibratoa));
 		a += rands[2] * sawtooth(omega + vibratoa);
 		a /= rands[0] + rands[1] + rands[2]
 		
-		let b = rands[3] * mypow(Math.sin(omega / 2 + vibratob),rands[31] + 1);
+		let b = rands[3] * mypow(Math.sin(omega / 2 + vibratob),rands[31] + 0.5);
 		b += rands[4] * Math.sign(Math.sin(omega / 2 + vibratob));
 		b += rands[5] * sawtooth(omega / 2 + vibratob);
 		b /= rands[3] + rands[4] + rands[5]
 		
-		let c = rands[6] * mypow(Math.cos(omega2 + vibratoc),rands[32] + 1);
+		let c = rands[6] * mypow(Math.cos(omega2 + vibratoc),rands[32] + 0.5);
 		c += rands[7] * Math.sign(Math.cos(omega2 + vibratoc));
 		c += rands[8] * sawtooth(omega2 + vibratoc);
 		c /= rands[6] + rands[7] + rands[8]
@@ -427,17 +427,17 @@ make();
  		let vibratoc = Math.sin(2 * Math.PI * 3 * vc * this.thread.x / len) * rands[17] * 3
 
 		let a = 0.0
-		a += rands[0] * mypow(Math.sin(omega + vibratoa),2 * rands[30] + 1);
+		a += rands[0] * mypow(Math.sin(omega + vibratoa),2 * rands[30] + 0.5);
 		a += rands[1] * Math.sign(Math.sin(omega + vibratoa));
 		a += rands[2] * sawtooth(omega + vibratoa);
 		a /= rands[0] + rands[1] + rands[2]
 		
-		let b = rands[3] * mypow(Math.sin(omega * 2 + vibratob),2 * rands[31] + 1);
+		let b = rands[3] * mypow(Math.sin(omega * 2 + vibratob),2 * rands[31] + 0.5);
 		b += rands[4] * Math.sign(Math.sin(omega * 2 + vibratob));
 		b += rands[5] * sawtooth(omega * 2 + vibratob);
 		b /= rands[3] + rands[4] + rands[5]
 		
-		let c = rands[6] * mypow(Math.sin(omega * 3 + vibratoc),2 * rands[32] + 1);
+		let c = rands[6] * mypow(Math.sin(omega * 3 + vibratoc),2 * rands[32] + 0.5);
 		c += rands[7] * Math.sign(Math.sin(omega * 3 + vibratoc));
 		c += rands[8] * sawtooth(omega * 3 + vibratoc);
 		c /= rands[6] + rands[7] + rands[8]
