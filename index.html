@@ -178,56 +178,95 @@ function sc2scale(sc,x0) {
 	return scale
 }
 
+
 let sc = [2,2,1,2,2,2,1]
 
+
+
 function makeScale() {
+
 sc = [2,2,1,2,2,2,1]
 let n = rand(sc.length)
 for(let i = 0;i < n;++i) sc.unshift(sc.pop())
-sc = sc.concat(sc)
+sc = sc.concat(sc).concat(sc)
 
-scale = sc2scale(sc,rand(12) - 6)
+scale = sc2scale(sc,rand(12) - 12)
 document.getElementById("scale").innerHTML = "[" + scale + "]";
 }
 
 class Melody {
-constructor(stepSize,instrument) {
-this.stepSize = stepSize;
-this.instrument = instrument;
-this.index = 0;
-	this.i = 0;
-this.min = rand(scale.length);
-this.max = rand(scale.length);
-this.r = Math.random();
-this.r2 = Math.random();
-this.note = 0;
-	
-}
+	constructor(stepSize,instrument) {
+		this.stepSize = stepSize;
+		this.instrument = instrument;
+		this.index = 0;
+		this.i = 0;
+		this.min = rand(scale.length);
+		this.max = rand(scale.length);
+		this.r = Math.random();
+		this.r2 = Math.random();
+		this.note = 0;
+		this.makeMelodyI = 0;
+		this.makeMelody()
+	}
 
-play(buffer,offset) {
-let vs = [1.5,0.75,0.75,0.75,1,0.75,0.75,0.75];
-let i = this.i % vs.length;
+	makeMelody() {
+		this.pauseProb = (1 - ((this.makeMelodyI % 32) / 32)) * 0.9
+		this.randomProb = Math.random() * ( 1 - this.pauseProb)
+		this.repeatProb = Math.random() * ( 1 - this.pauseProb)
+		this.toneUpProb = Math.random() * ( 1 - this.pauseProb)
+		this.toneDownProb = Math.random() * ( 1 - this.pauseProb)
+		this.min = rand(scale.length);
+		this.max = rand(scale.length);	
+		if(this.min > this.max) {
+			let swp = this.min 
+			this.min = this.max
+			this.max = swp
+		}
+		this.vs = []
+		for(let i = 0;i < 8;++i) this.vs.push(1)
+		this.makeMelodyI += 1
+	}
 
-if(this.i % (vs.length * 4) == 0) {
-this.min = rand(scale.length);
-this.max = rand(scale.length);	
-	
-	 }
-	 
-	let note = this.min + rand(this.max -  this.min);
-	let duration = Math.random()
-	
-switch(rand(3)) {
-	    case 0:
-		break;
-	   case 1:
-		this.note = note
-	   case 2:
-		this.instrument.render(buffer,offset,scale[this.note],duration,vs[i]);
-}
-	
-this.i += 1;
-}
+	play(buffer,offset) {
+		let i = this.i % this.vs.length;
+
+		if(this.i % (this.vs.length * 4) == 0) this.makeMelody()
+			
+		let duration = Math.random()
+		
+		let prob =  (this.pauseProb + this.randomProb + this.repeatProb + this.toneUpProb + this.toneDownProb) * Math.random()
+
+		if(prob > 0 && prob < this.pauseProb) {
+		}
+		prob -= this.pauseProb
+
+		if(prob > 0 && prob < this.randomProb) {
+				this.note = this.min + rand(this.max -  this.min);
+				this.instrument.render(buffer,offset,scale[this.note],duration,this.vs[i]);
+		}
+		prob -= this.randomProb
+
+		if(prob > 0 && prob < this.repeatProb) {
+				this.instrument.render(buffer,offset,scale[this.note],duration,this.vs[i]);
+		}
+		prob -= this.repeatProb
+
+		if(prob > 0 && prob < this.toneUpProb) {
+				this.note += 1
+				if(this.note > this.max) this.note = this.max
+				this.instrument.render(buffer,offset,scale[this.note],duration,this.vs[i]);
+		}
+		prob -= this.toneUpProb
+
+		if(prob > 0 && prob < this.toneDownProb) {
+				this.note -= 1
+				if(this.note < this.min) this.note = this.min
+				this.instrument.render(buffer,offset,scale[this.note],duration,this.vs[i]);
+		}
+		prob -= this.toneDownProb
+			
+		this.i += 1;
+	}
 }
 
 var channels = 2;
@@ -463,8 +502,8 @@ make();
 Seconds : 
 <select id="sec" style="font-size:2em">
 <option value="30" >30</option>
-<option value="60" selected >60</option>
-<option value="120" >120</option>
+<option value="60" >60</option>
+<option value="120" selected >120</option>
 <option value="180">180</option>
 </select>
 </span>
@@ -500,6 +539,21 @@ scale : <span id="cscale"></span>
 </fieldset>
 <!--<fieldset><legend>number of bad songs</legend><span id="bads"></span></fieldset>
 <fieldset><legend>number of good songs</legend><span id="goods"></span></fieldset>-->
+
+<h1>
+<fieldset style="background-color:white">
+	<legend>Imprint</legend>
+	<ol>
+		<li><img src="Thorsten Kiefer.png" style="width:15%;height:15%"></li>
+		<li>Thorsten Kiefer</li>
+		<li>Gellerstr. 26</li>
+		<li>72764 Reutlingen DE</li>
+		<li><a href="tel:+4915213501543">+4915213501543</li>
+		<li><a href="mailto:thorstenkiefer5@gmail.com">thorstenkiefer5@gmail.com</a></li>
+		<li>Donation IBAN : DE26 6407 0224 0755 3951 60</li>
+	</ol>
+</fieldset>
+</h1>
 
 <div id="sfcb1weg9hme9td47tl2hwqqe67wagaktwa"></div><script type="text/javascript" src="https://counter6.optistats.ovh/private/counter.js?c=b1weg9hme9td47tl2hwqqe67wagaktwa&down=async" async></script><br><a href="https://www.freecounterstat.com">free website counter</a><noscript><a href="https://www.freecounterstat.com" title="free website counter"><img src="https://counter6.optistats.ovh/private/freecounterstat.php?c=b1weg9hme9td47tl2hwqqe67wagaktwa" border="0" title="free website counter" alt="free website counter"></a></noscript>
 
