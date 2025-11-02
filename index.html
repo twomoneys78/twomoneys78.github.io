@@ -521,6 +521,36 @@ make();
 	}
 
 	size = 400
+	
+	function onclick(evt) {
+		if(evt.target.full) {
+			evt.target.style.position = "relative";
+			evt.target.full = 0
+		} else {
+			evt.target.style.position = "fixed";
+			evt.target.style.top = "0";
+			evt.target.style.right = "0";
+			evt.target.style.bottom = "0";
+			evt.target.style.left = "0";
+			evt.target.style.width = "100%";
+			evt.target.style.height = "100%";
+			evt.target.style.zIndex = "10";
+
+/*
+			 position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  */
+			evt.target.full = 1
+		}
+	}
 </script>
 
 
@@ -575,6 +605,7 @@ make();
 	},{constants : {z0 : new Float32Array([0,0])}}).setOutput([size,size]).setGraphical(true)
 	
 	document.getElementById("mandelbrotshorewalk").appendChild(mandelbrotKernel.canvas)
+	mandelbrotKernel.canvas.addEventListener("click",onclick);
 	
 	let coeffs = [[0,0],[0,0],[0,0],[0,0],[1,0]]
 	let vcoeffs = [[0,0],[0,0],[0,0],[0,0],[0,0]]
