@@ -489,9 +489,38 @@ make();
  	}).setOutput([audioCtx.sampleRate / 2]); // over 1 second
 
 
-
-
+	function complexAdd(a,b) {
+		return [a[0] + b[0],a[1] + b[1]]
+	}
 	
+	function complexMul(a,b) {
+		return [a[0] * b[0] - a[1] * b[1],a[1] * b[0] + a[0] * b[1]]
+	}
+	
+	function mandelbrot(iter,n,coeff,_z,c) {
+		let z = _z
+		let m = 1
+		
+		while(z[0] * z[0] + z[1] * z[1] < 4.0) {
+			let z0 = z
+			let poly = [0.0,0.0]
+						
+			for(let i = 0;i < n;++i) {
+				poly = complexAdd(complexMul([coeff[i][0],coeff[i][1]],z0),poly)
+				z0 = complexMul(z0,z)
+			}
+		
+			poly = complexAdd(poly,c)
+			z = poly
+			++m
+			if(m > iter) break;
+		}
+		
+		if(m >= iter) return 0
+		return m
+	}
+
+	size = 400
 </script>
 
 
@@ -500,24 +529,80 @@ make();
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-        Accordion Item #1
+        Julia Set
       </button>
     </h2>
     <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the first item’s accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+      <div class="accordion-body" id="julia">
+<script>
+	
+	const juliaGPU = new GPU()
+	const juliaKernel = juliaGPU.createKernel(function() {
+		this.color(0,0,0,1)
+	}).setOutput([size,size]).setGraphical(true)
+	
+	document.getElementById("julia").appendChild(juliaKernel.canvas)
+	juliaKernel()
+</script>
       </div>
     </div>
   </div>
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-        Accordion Item #2
+        Mandelbrot Set Shorewalk
       </button>
     </h2>
     <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the second item’s accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+      <div class="accordion-body" id="mandelbrotshorewalk">
+<script>
+	const mandelbrotGPU = new GPU()
+	mandelbrotGPU.addFunction(complexAdd)
+	mandelbrotGPU.addFunction(complexMul)
+	mandelbrotGPU.addFunction(mandelbrot)
+	const mandelbrotKernel = mandelbrotGPU.createKernel(function(iter,n,coeff,mathWindow,size) {
+		const i = (mathWindow[1] - mathWindow[0]) * this.thread.x / size + mathWindow[0]
+		const j = (mathWindow[3] - mathWindow[2]) * this.thread.y / size + mathWindow[2]
+		const code = mandelbrot(iter,n,coeff,[0,0],[i,j])
+		if(code == 0) {
+			this.color(0,0,0,1)
+		} else {
+			const r = (Math.sin(0.1 * code + 0.1) + 1) / 2
+			const g = (Math.sin(0.2 * code + 0.2) + 1) / 2
+			const b = (Math.sin(0.3 * code + 0.3) + 1) / 2
+			this.color(r,g,b,1)
+		}
+	},{constants : {z0 : new Float32Array([0,0])}}).setOutput([size,size]).setGraphical(true)
+	
+	document.getElementById("mandelbrotshorewalk").appendChild(mandelbrotKernel.canvas)
+	
+	let coeffs = [[0,0],[0,0],[0,0],[0,0],[1,0]]
+	let vcoeffs = [[0,0],[0,0],[0,0],[0,0],[0,0]]
+	
+	function render() {
+		mandelbrotKernel(100,coeffs.length,coeffs,[-2,2,-2,2],size)
+		
+		for(let i = 0;i < coeffs.length;++i) {
+			for(let j = 0;j < coeffs[i].length;++j) {
+				vcoeffs[i][j] += 0.1 * (Math.random() - 0.5)
+				coeffs[i][j] += 0.1 * vcoeffs[i][j]	
+				
+				if(coeffs[i][j] > 1) {
+					coeffs[i][j] = 1
+					vcoeffs[i][j] = 0
+				}
+				if(coeffs[i][j] < -1) {
+					coeffs[i][j] = -1
+					vcoeffs[i][j] = 0
+				}
+			}
+		}
+		
+		window.setTimeout(render,100);
+	}
+	
+	render();
+</script>
       </div>
     </div>
   </div>
