@@ -521,11 +521,14 @@ make();
 	}
 
 	size = 400
+	let coeffs = [[0,0],[0,0],[0,0],[0,0],[1,0]]
 	
 	function onclick(evt) {
 		if(evt.target.full) {
 			evt.target.style.position = "relative";
 			evt.target.full = 0
+			evt.target.style.width = "";
+			evt.target.style.height = "";
 		} else {
 			evt.target.style.position = "fixed";
 			evt.target.style.top = "0";
@@ -536,21 +539,14 @@ make();
 			evt.target.style.height = "100%";
 			evt.target.style.zIndex = "10";
 
-/*
-			 position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: 0;
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  */
 			evt.target.full = 1
 		}
 	}
+	
+	let shoreX = 0
+	let shoreY = 0
+	let shoreAlpha = 0
+	let shoreStep = 0.0001
 </script>
 
 
@@ -567,12 +563,32 @@ make();
 <script>
 	
 	const juliaGPU = new GPU()
-	const juliaKernel = juliaGPU.createKernel(function() {
-		this.color(0,0,0,1)
-	}).setOutput([size,size]).setGraphical(true)
+	juliaGPU.addFunction(complexAdd)
+	juliaGPU.addFunction(complexMul)
+	juliaGPU.addFunction(mandelbrot)
+	const juliaKernel = juliaGPU.createKernel(function(iter,n,coeff,mathWindow,size,shore) {
+		const i = (mathWindow[1] - mathWindow[0]) * this.thread.x / size + mathWindow[0]
+		const j = (mathWindow[3] - mathWindow[2]) * this.thread.y / size + mathWindow[2]
+		const code = mandelbrot(iter,n,coeff,[i,j],[shore[0],shore[1]])
+		if(code == 0) {
+			this.color(0,0,0,1)
+		} else {
+			const r = (Math.sin(0.1 * code + 0.1) + 1) / 2
+			const g = (Math.sin(0.2 * code + 0.2) + 1) / 2
+			const b = (Math.sin(0.3 * code + 0.3) + 1) / 2
+			this.color(r,g,b,1)
+		}
+	},{constants : {z0 : [0,0], size : size}}).setOutput([size,size]).setGraphical(true)
 	
 	document.getElementById("julia").appendChild(juliaKernel.canvas)
-	juliaKernel()
+	juliaKernel.canvas.addEventListener("click",onclick);
+	
+	function juliaRender() {
+		juliaKernel(100,coeffs.length,coeffs,[-2,2,-2,2],size,[shoreX,shoreY])
+		window.setTimeout(juliaRender,100)
+	}
+	
+	juliaRender()
 </script>
       </div>
     </div>
@@ -590,33 +606,38 @@ make();
 	mandelbrotGPU.addFunction(complexAdd)
 	mandelbrotGPU.addFunction(complexMul)
 	mandelbrotGPU.addFunction(mandelbrot)
-	const mandelbrotKernel = mandelbrotGPU.createKernel(function(iter,n,coeff,mathWindow,size) {
+	const mandelbrotKernel = mandelbrotGPU.createKernel(function(iter,n,coeff,mathWindow,size,shore) {
 		const i = (mathWindow[1] - mathWindow[0]) * this.thread.x / size + mathWindow[0]
 		const j = (mathWindow[3] - mathWindow[2]) * this.thread.y / size + mathWindow[2]
-		const code = mandelbrot(iter,n,coeff,[0,0],[i,j])
-		if(code == 0) {
-			this.color(0,0,0,1)
+		const a = (shore[0] - mathWindow[0]) * size / (mathWindow[1] - mathWindow[0]) 
+		const b = (shore[1] - mathWindow[2]) * size / (mathWindow[3] - mathWindow[2]) 
+		if(this.thread.x == a || this.thread.y == b) {
+			this.color(1,1,1,1)
 		} else {
-			const r = (Math.sin(0.1 * code + 0.1) + 1) / 2
-			const g = (Math.sin(0.2 * code + 0.2) + 1) / 2
-			const b = (Math.sin(0.3 * code + 0.3) + 1) / 2
-			this.color(r,g,b,1)
+			const code = mandelbrot(iter,n,coeff,[0,0],[i,j])
+			if(code == 0) {
+				this.color(0,0,0,1)
+			} else {
+				const r = (Math.sin(0.1 * code + 0.1) + 1) / 2
+				const g = (Math.sin(0.2 * code + 0.2) + 1) / 2
+				const b = (Math.sin(0.3 * code + 0.3) + 1) / 2
+				this.color(r,g,b,1)
+			}
 		}
-	},{constants : {z0 : new Float32Array([0,0])}}).setOutput([size,size]).setGraphical(true)
+	},{constants : {z0 : [0,0], size : size}}).setOutput([size,size]).setGraphical(true)
 	
 	document.getElementById("mandelbrotshorewalk").appendChild(mandelbrotKernel.canvas)
 	mandelbrotKernel.canvas.addEventListener("click",onclick);
 	
-	let coeffs = [[0,0],[0,0],[0,0],[0,0],[1,0]]
 	let vcoeffs = [[0,0],[0,0],[0,0],[0,0],[0,0]]
 	
 	function render() {
-		mandelbrotKernel(100,coeffs.length,coeffs,[-2,2,-2,2],size)
+		mandelbrotKernel(100,coeffs.length,coeffs,[-2,2,-2,2],size,[shoreX,shoreY])
 		
 		for(let i = 0;i < coeffs.length;++i) {
 			for(let j = 0;j < coeffs[i].length;++j) {
-				vcoeffs[i][j] += 0.1 * (Math.random() - 0.5)
-				coeffs[i][j] += 0.1 * vcoeffs[i][j]	
+				vcoeffs[i][j] += 0.05 * (Math.random() - 0.5)
+				coeffs[i][j] += 0.05 * vcoeffs[i][j]	
 				
 				if(coeffs[i][j] > 1) {
 					coeffs[i][j] = 1
@@ -629,6 +650,44 @@ make();
 			}
 		}
 		
+		// shorewalk
+		let dx = shoreStep * Math.cos(shoreAlpha)
+		let dy = shoreStep * Math.sin(shoreAlpha)
+
+		let a0 = 0
+		if(mandelbrot(100,coeffs.length,coeffs,[0,0],[shoreX,shoreY]) == 0) {
+			while(true) {
+				a0 += 0.1
+				if(a0 > 2 * Math.PI) {
+					shoreStep += 0.01
+					a0 = 0
+				}
+				shoreAlpha += 0.1
+				dx = shoreStep * Math.cos(shoreAlpha)
+				dy = shoreStep * Math.sin(shoreAlpha)
+				if(shoreStep > 2) break;
+				if(mandelbrot(100,coeffs.length,coeffs,[0,0],[shoreX + dx,shoreY + dy]) != 0) break		
+			} 
+		} else {
+			while(true) {
+				a0 += 0.1
+				if(a0 > 2 * Math.PI) {
+					shoreStep += 0.01
+					a0 = 0
+				}
+				shoreAlpha -= 0.1
+				dx = shoreStep * Math.cos(shoreAlpha)
+				dy = shoreStep * Math.sin(shoreAlpha)
+				if(shoreStep > 2) break;
+				if(mandelbrot(100,coeffs.length,coeffs,[0,0],[shoreX + dx,shoreY + dy]) == 0) break		
+			} 
+		}
+		
+		//shoreAlpha -= Math.PI / 2
+		shoreStep = 0.01
+		shoreX += dx
+		shoreY += dy
+
 		window.setTimeout(render,100);
 	}
 	
