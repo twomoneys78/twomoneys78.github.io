@@ -684,6 +684,8 @@ make();
 				if(shoreStep > 2) break;
 				if(mandelbrot(100,coeffs.length,coeffs,[0,0],[shoreX + dx,shoreY + dy]) == 0) {
 					shoreAlpha += 0.01
+					dx = shoreStep * Math.cos(shoreAlpha)
+					dy = shoreStep * Math.sin(shoreAlpha)
 					break
 				}		
 			} 
@@ -758,6 +760,36 @@ scale : <span id="cscale"></span>
 </fieldset>
 <!--<fieldset><legend>number of bad songs</legend><span id="bads"></span></fieldset>
 <fieldset><legend>number of good songs</legend><span id="goods"></span></fieldset>-->
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+        YouTube
+      </button>
+    </h2>
+    <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+      
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/ATiqjJi05IU?si=Ne3A43pD91B2p2Nd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <br>
+      
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/mIdNp17YByY?si=kPPxe2u_upWwC3vh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      
+      <br>
+      
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/FY8ngbhpfdc?si=_vNaoXT2QWq4zLlR" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      
+      <br>
+      
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/nwcAD9raTB8?si=xs7him1GgOS1IXPu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      
+      
+      
       </div>
     </div>
   </div>
