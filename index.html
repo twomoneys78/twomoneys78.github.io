@@ -660,12 +660,12 @@ make();
 		let a0 = 0
 		if(mandelbrot(100,coeffs.length,coeffs,[0,0],[shoreX,shoreY]) == 0) {
 			while(true) {
-				a0 += 0.1
+				a0 += 0.01
 				if(a0 > 2 * Math.PI) {
 					shoreStep += 0.01
 					a0 = 0
 				}
-				shoreAlpha += 0.1
+				shoreAlpha += 0.01
 				dx = shoreStep * Math.cos(shoreAlpha)
 				dy = shoreStep * Math.sin(shoreAlpha)
 				if(shoreStep > 2) break;
@@ -673,16 +673,19 @@ make();
 			} 
 		} else {
 			while(true) {
-				a0 += 0.1
+				a0 += 0.01
 				if(a0 > 2 * Math.PI) {
 					shoreStep += 0.01
 					a0 = 0
 				}
-				shoreAlpha -= 0.1
+				shoreAlpha -= 0.01
 				dx = shoreStep * Math.cos(shoreAlpha)
 				dy = shoreStep * Math.sin(shoreAlpha)
 				if(shoreStep > 2) break;
-				if(mandelbrot(100,coeffs.length,coeffs,[0,0],[shoreX + dx,shoreY + dy]) == 0) break		
+				if(mandelbrot(100,coeffs.length,coeffs,[0,0],[shoreX + dx,shoreY + dy]) == 0) {
+					shoreAlpha += 0.01
+					break
+				}		
 			} 
 		}
 		
