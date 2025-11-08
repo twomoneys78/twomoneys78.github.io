@@ -19,6 +19,16 @@ Math.random = function() {
 	return randoms[randomi++]
 }
 */
+
+function initGPU() {
+	try {
+		return new window.GPU.GPU();
+	} catch (e) {
+		return new GPU();
+	}
+}
+
+
 let bads = []
 //let goods = [];
 
@@ -102,7 +112,7 @@ function ratebad() {
 	source.stop()
 }
 
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var audioCtx = new (AudioContext || webkitAudioContext)();
 
 var scale = new Array(18);
 
@@ -292,6 +302,12 @@ source.buffer = myArrayBuffer;
 // connect the AudioBufferSourceNode to the
 // destination so we can hear the sound
 
+ var gainNode = audioCtx.createGain();          // Create a gain node
+  source.connect(gainNode);                     // Connect the source to the gain node
+  gainNode.connect(audioCtx.destination);        // Connect the gain node to the destination
+  gainNode.gain.value = 1.0;     
+//  document.getElementById("debug").innerHTML = source + " / " + audioCtx
+  
 source.connect(audioCtx.destination);
 source.start();
 //playingrandoms = randoms.slice()
@@ -398,7 +414,7 @@ make();
 		return xs;
 	};
 
-    const gpu = new GPU();
+    const gpu = initGPU();
     
 	gpu.addFunction(mypow)
 	
@@ -547,6 +563,8 @@ make();
 	let shoreY = 0
 	let shoreAlpha = 0
 	let shoreStep = 0.0001
+
+
 </script>
 
 <center>
@@ -565,7 +583,7 @@ make();
       <div class="accordion-body" id="julia">
 <script>
 	
-	const juliaGPU = new GPU()
+	const juliaGPU = initGPU()
 	juliaGPU.addFunction(complexAdd)
 	juliaGPU.addFunction(complexMul)
 	juliaGPU.addFunction(mandelbrot)
@@ -605,7 +623,7 @@ make();
     <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
       <div class="accordion-body" id="mandelbrotshorewalk">
 <script>
-	const mandelbrotGPU = new GPU()
+	const mandelbrotGPU = initGPU()
 	mandelbrotGPU.addFunction(complexAdd)
 	mandelbrotGPU.addFunction(complexMul)
 	mandelbrotGPU.addFunction(mandelbrot)
@@ -654,18 +672,19 @@ make();
 		}
 		
 		// shorewalk
+		shoreStep = 0.01
 		let dx = shoreStep * Math.cos(shoreAlpha)
 		let dy = shoreStep * Math.sin(shoreAlpha)
 
 		let a0 = 0
 		if(mandelbrot(100,coeffs.length,coeffs,[0,0],[shoreX,shoreY]) == 0) {
 			while(true) {
-				a0 += 0.01
+				a0 += 0.1
 				if(a0 > 2 * Math.PI) {
 					shoreStep += 0.01
 					a0 = 0
 				}
-				shoreAlpha += 0.01
+				shoreAlpha += 0.1
 				dx = shoreStep * Math.cos(shoreAlpha)
 				dy = shoreStep * Math.sin(shoreAlpha)
 				if(shoreStep > 2) break;
@@ -673,17 +692,17 @@ make();
 			} 
 		} else {
 			while(true) {
-				a0 += 0.01
+				a0 += 0.1
 				if(a0 > 2 * Math.PI) {
 					shoreStep += 0.01
 					a0 = 0
 				}
-				shoreAlpha -= 0.01
+				shoreAlpha -= 0.1
 				dx = shoreStep * Math.cos(shoreAlpha)
 				dy = shoreStep * Math.sin(shoreAlpha)
 				if(shoreStep > 2) break;
 				if(mandelbrot(100,coeffs.length,coeffs,[0,0],[shoreX + dx,shoreY + dy]) == 0) {
-					shoreAlpha += 0.01
+					shoreAlpha += 0.1
 					dx = shoreStep * Math.cos(shoreAlpha)
 					dy = shoreStep * Math.sin(shoreAlpha)
 					break
@@ -692,7 +711,7 @@ make();
 		}
 		
 		//shoreAlpha -= Math.PI / 2
-		shoreStep = 0.01
+		//shoreStep = 0.1
 		shoreX += dx
 		shoreY += dy
 
@@ -713,7 +732,7 @@ make();
     <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
       <div class="accordion-body">
 
-
+<div id="debug"></div>
 <h1>Progress : <span id="abc"></span></h1>
 
 <button onclick="this.style.visibility='hidden';sound()" style='width:25%;height:25%;font-size:3em;position:absolute;'>Sound</button>
@@ -812,6 +831,17 @@ scale : <span id="cscale"></span>
 </h1>
 
 <div id="sfcb1weg9hme9td47tl2hwqqe67wagaktwa"></div><script type="text/javascript" src="https://counter6.optistats.ovh/private/counter.js?c=b1weg9hme9td47tl2hwqqe67wagaktwa&down=async" async></script><br><a href="https://www.freecounterstat.com">free website counter</a><noscript><a href="https://www.freecounterstat.com" title="free website counter"><img src="https://counter6.optistats.ovh/private/freecounterstat.php?c=b1weg9hme9td47tl2hwqqe67wagaktwa" border="0" title="free website counter" alt="free website counter"></a></noscript>
+
+<script>
+if(typeof AudioContext != "undefined" || typeof webkitAudioContext != "undefined") {
+   var resumeAudio = function() {
+      if(typeof g_WebAudioContext == "undefined" || g_WebAudioContext == null) return;
+      if(g_WebAudioContext.state == "suspended") g_WebAudioContext.resume();
+      document.removeEventListener("click", resumeAudio);
+   };
+   document.addEventListener("click", resumeAudio);
+}
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>	
 </body>
