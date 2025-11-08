@@ -1,0 +1,11 @@
+date > text.txt
+echo "Hallo Sigmund Freud" >> text.txt
+
+while [ true ]; do 
+	m="0x`md5sum text.txt | cut -f 1 -d " "`";
+	s="`polygen -seed $(( $m % 65000 )) satz.grm 2>/dev/null`"
+	trans -b -p "$s" | tee /dev/tty >> text.txt
+	sleep $(( $RANDOM % 10 ))
+done
+
+
