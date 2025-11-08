@@ -7,7 +7,18 @@
 <body style="background-image:url('back.webp');background-size:100% 100%">
 
 <script>
+let myseed = 65000 * Math.random()
+let randcoeffs = []
+for(let i = 0;i < 5;++i) randcoeffs.push(Math.random())
 
+Math.random = function() {
+	let s = myseed
+	for(let i = 0;i < randcoeffs.length;++i) s += 65000 * randcoeffs[i] * Math.pow((Math.sin(myseed) + 1) / 2,i)
+	myseed = s % 65000
+	return myseed / 65000.0
+}
+
+//for(let i = 0;i < 100;++i) document.write(Math.random() + "<br>")
 /*
 let ___random = Math.random
 let randoms = new Float32Array(10000)
@@ -262,14 +273,14 @@ class Melody {
 
 		if(prob > 0 && prob < this.toneUpProb) {
 				this.note += 1
-				if(this.note > this.max) this.note = this.max
+				if(this.note > this.max) this.note = this.min + rand(this.max -  this.min);
 				this.instrument.render(buffer,offset,scale[this.note],duration,this.vs[i]);
 		}
 		prob -= this.toneUpProb
 
 		if(prob > 0 && prob < this.toneDownProb) {
 				this.note -= 1
-				if(this.note < this.min) this.note = this.min
+				if(this.note < this.min) this.note = this.min + rand(this.max -  this.min);
 				this.instrument.render(buffer,offset,scale[this.note],duration,this.vs[i]);
 		}
 		prob -= this.toneDownProb
