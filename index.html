@@ -910,13 +910,21 @@ scale : <span id="cscale"></span>
 		<li><a href="tel:+4915213501543">+4915213501543</li>
 		<li><a href="mailto:thorstenkiefer5@gmail.com">thorstenkiefer5@gmail.com</a></li>
 		<li>Donation IBAN : DE26 6407 0224 0755 3951 60</li>
+		<li id="counter"></li>
 	</ol>
 </fieldset>
 </h1>
 
-<div id="sfcb1weg9hme9td47tl2hwqqe67wagaktwa"></div><script type="text/javascript" src="https://counter6.optistats.ovh/private/counter.js?c=b1weg9hme9td47tl2hwqqe67wagaktwa&down=async" async></script><br><a href="https://www.freecounterstat.com">free website counter</a><noscript><a href="https://www.freecounterstat.com" title="free website counter"><img src="https://counter6.optistats.ovh/private/freecounterstat.php?c=b1weg9hme9td47tl2hwqqe67wagaktwa" border="0" title="free website counter" alt="free website counter"></a></noscript>
+
 
 <script>
+const req = new XMLHttpRequest()
+req.addEventListener("load",function() {
+	document.getElementById("counter").innerHTML = this.responseText
+})
+req.open("GET","counter.php")
+req.send()
+
 if(typeof AudioContext != "undefined" || typeof webkitAudioContext != "undefined") {
    var resumeAudio = function() {
       if(typeof g_WebAudioContext == "undefined" || g_WebAudioContext == null) return;
