@@ -487,9 +487,9 @@ make();
 		let va = rands[12]
 		let vb = va * (1 * rands[14] + 0.5)
 		let vc = vb * (1 * rands[16] + 0.5)
-  		let vibratoa = Math.sin(2 * Math.PI * 3 * va * this.thread.x / len) * rands[13] * 1
- 		let vibratob = Math.sin(2 * Math.PI * 3 * vb * this.thread.x / len) * rands[15] * 1
- 		let vibratoc = Math.sin(2 * Math.PI * 3 * vc * this.thread.x / len) * rands[17] * 1
+  		let vibratoa = Math.sin(2 * Math.PI * 3 * va * this.thread.x / len) * rands[13] * 1.2
+ 		let vibratob = Math.sin(2 * Math.PI * 3 * vb * this.thread.x / len) * rands[15] * 1.2
+ 		let vibratoc = Math.sin(2 * Math.PI * 3 * vc * this.thread.x / len) * rands[17] * 1.2
 
 		let a = 0.0
 		a += rands[0] * mypow(Math.sin(omega + vibratoa),2 * rands[30] + 0.5);
