@@ -1,0 +1,6 @@
+while [ true ]; do 
+	espeak -v mb-de7 -s $(( $RANDOM % 200 )) -p $(( 50 + $RANDOM % 50 )) "haaach ?" ;
+	sleep $(($RANDOM % 4));
+done
+
+
